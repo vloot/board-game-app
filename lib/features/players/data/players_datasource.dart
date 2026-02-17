@@ -1,10 +1,10 @@
 import 'package:board_game_app/core/infrastructure/database.dart';
 import 'player_model.dart';
 
-class PlayersDatasource {
+class PlayerDatasource {
   final Database database;
 
-  PlayersDatasource(this.database);
+  PlayerDatasource(this.database);
 
   Future<PlayerModel> add(PlayerModel model) async {
     final id = await database

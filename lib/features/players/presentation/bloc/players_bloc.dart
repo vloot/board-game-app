@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final PlayerRepository repo;
 
-  PlayerBloc(this.repo) : super(PlayerInitial()) {
+  PlayerBloc(this.repo) : super(PlayerInit()) {
     on<LoadPlayers>(_onLoadPlayers);
     on<GetPlayerById>(_onGetById);
     on<AddPlayer>(_onAdd);
@@ -21,7 +21,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     emit(PlayerLoading());
     try {
       final players = await repo.getAll();
-      emit(PlayerLoadedAll(players));
+      emit(PlayersLoaded(players));
     } catch (e) {
       emit(PlayerError(e.toString()));
     }

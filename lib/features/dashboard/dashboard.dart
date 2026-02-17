@@ -1,4 +1,5 @@
 import 'package:board_game_app/features/board_games/presentation/board_games_page.dart';
+import 'package:board_game_app/features/players/presentation/players_page.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,14 @@ class Dashboard extends StatelessWidget {
                           width: size,
                           height: size,
                           text: "Players",
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlayersPage(),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

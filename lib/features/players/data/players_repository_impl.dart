@@ -4,7 +4,7 @@ import 'package:board_game_app/features/players/domain/player_entity.dart';
 import 'package:board_game_app/features/players/domain/players_repository.dart';
 
 class PlayerRepositoryImpl implements PlayerRepository {
-  final PlayersDatasource datasource;
+  final PlayerDatasource datasource;
 
   PlayerRepositoryImpl(this.datasource);
 

@@ -2,13 +2,13 @@ import 'package:board_game_app/features/players/domain/player_entity.dart';
 
 abstract class PlayerState {}
 
-class PlayerInitial extends PlayerState {}
+class PlayerInit extends PlayerState {}
 
 class PlayerLoading extends PlayerState {}
 
-class PlayerLoadedAll extends PlayerState {
+class PlayersLoaded extends PlayerState {
   final List<PlayerEntity> players;
-  PlayerLoadedAll(this.players);
+  PlayersLoaded(this.players);
 }
 
 class PlayerLoadedSingle extends PlayerState {

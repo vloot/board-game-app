@@ -1,6 +1,7 @@
 import 'package:board_game_app/core/infrastructure/dependency_injection.dart';
 import 'package:board_game_app/features/board_games/presentation/bloc/board_game_bloc.dart';
 import 'package:board_game_app/features/dashboard/dashboard.dart';
+import 'package:board_game_app/features/players/presentation/bloc/players_bloc.dart';
 import 'package:board_game_app/features/settings/domain/entities/app_settings_entity.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
@@ -16,6 +17,7 @@ void main() async {
       providers: [
         BlocProvider(create: (_) => getIt<AppSettingsBloc>()),
         BlocProvider(create: (_) => getIt<BoardGameBloc>()),
+        BlocProvider(create: (_) => getIt<PlayerBloc>()),
       ],
       child: BlocBuilder<AppSettingsBloc, AppSettingsState>(
         builder: (context, state) {
