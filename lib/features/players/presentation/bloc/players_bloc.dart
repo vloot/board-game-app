@@ -7,7 +7,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final PlayerRepository repo;
 
   PlayerBloc(this.repo) : super(PlayerInit()) {
-    on<LoadPlayers>(_onLoadPlayers);
+    on<GetPlayers>(_onLoadPlayers);
     on<GetPlayerById>(_onGetById);
     on<AddPlayer>(_onAdd);
     on<EditPlayer>(_onEdit);
@@ -15,7 +15,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   }
 
   Future<void> _onLoadPlayers(
-    LoadPlayers event,
+    GetPlayers event,
     Emitter<PlayerState> emit,
   ) async {
     emit(PlayerLoading());

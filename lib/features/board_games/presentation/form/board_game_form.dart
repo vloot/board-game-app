@@ -5,7 +5,7 @@ import 'package:board_game_app/features/board_games/presentation/bloc/board_game
 import 'package:board_game_app/features/board_games/presentation/form/double_input.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
 import 'package:board_game_app/features/shared/input_with_color.dart';
-import 'package:board_game_app/features/shared/modal_form.dart';
+import 'package:board_game_app/features/shared/form/modal_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

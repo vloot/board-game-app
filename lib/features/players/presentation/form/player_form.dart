@@ -3,7 +3,7 @@ import 'package:board_game_app/features/players/presentation/bloc/players_bloc.d
 import 'package:board_game_app/features/players/presentation/bloc/players_bloc_event.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/input_with_color.dart';
-import 'package:board_game_app/features/shared/modal_form.dart';
+import 'package:board_game_app/features/shared/form/modal_form.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +29,12 @@ class _PlayerFormState extends State<PlayerForm> {
   final _formKey = GlobalKey<FormState>();
   bool _isValidated = true;
   Color color = Colors.white;
+
+  @override
+  void setState(VoidCallback fn) async {
+    super.setState(fn);
+    context.read<PlayerBloc>().add(GetPlayers());
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -6,8 +6,8 @@ import 'package:board_game_app/features/board_games/presentation/board_game_tile
 import 'package:board_game_app/features/navigation_bar/navigation_button.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/navigation_bar/custom_nav_bar.dart';
+import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BoardGamesPage extends StatefulWidget {
@@ -61,15 +61,11 @@ class _BoardGamesPageState extends State<BoardGamesPage> {
                 ),
                 NavigationButton(
                   onPressed: () {
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      showDragHandle: true,
-                      context: context,
-                      builder: (context) {
-                        return BoardGameForm(
-                          settingsState: context.read<AppSettingsBloc>().state,
-                        );
-                      },
+                    openForm(
+                      context,
+                      BoardGameForm(
+                        settingsState: context.read<AppSettingsBloc>().state,
+                      ),
                     );
                   },
                   iconData: Icons.add_sharp,

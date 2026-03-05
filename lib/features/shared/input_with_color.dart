@@ -48,6 +48,7 @@ class _InputWithColorState extends State<InputWithColor> {
       child: Stack(
         children: [
           TextFormField(
+            textCapitalization: TextCapitalization.sentences,
             validator: (value) {
               if (value == null || value.trim().length <= 1) {
                 return 'Enter a valid name';

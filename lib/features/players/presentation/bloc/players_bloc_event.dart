@@ -2,7 +2,7 @@ import 'package:board_game_app/features/players/domain/player_entity.dart';
 
 abstract class PlayerEvent {}
 
-class LoadPlayers extends PlayerEvent {}
+class GetPlayers extends PlayerEvent {}
 
 class GetPlayerById extends PlayerEvent {
   final int id;

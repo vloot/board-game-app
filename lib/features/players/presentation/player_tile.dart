@@ -1,9 +1,10 @@
 import 'package:board_game_app/features/players/domain/player_entity.dart';
 import 'package:board_game_app/features/players/presentation/bloc/players_bloc.dart';
 import 'package:board_game_app/features/players/presentation/bloc/players_bloc_event.dart';
-import 'package:board_game_app/features/players/presentation/players_page.dart';
+import 'package:board_game_app/features/players/presentation/form/player_form.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
-import 'package:board_game_app/features/shared/modal_form.dart';
+import 'package:board_game_app/features/shared/form/form_launcher.dart';
+import 'package:board_game_app/features/shared/form/modal_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -34,11 +35,13 @@ class PlayerTile extends StatelessWidget {
           ),
           SlidableAction(
             onPressed: (context) {
-              openPlayerForm(
+              openForm(
                 context,
-                FormAction.edit,
-                context.read<AppSettingsBloc>().state,
-                playerEntity: _playerEntity,
+                PlayerForm(
+                  formAction: FormAction.edit,
+                  settingsState: context.read<AppSettingsBloc>().state,
+                  preloadedPlayerEntity: _playerEntity,
+                ),
               );
             },
             backgroundColor: Color(0xFF21B7CA),

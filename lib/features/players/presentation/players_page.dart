@@ -1,5 +1,4 @@
 import 'package:board_game_app/features/navigation_bar/navigation_button.dart';
-import 'package:board_game_app/features/players/domain/player_entity.dart';
 import 'package:board_game_app/features/players/presentation/bloc/players_bloc.dart';
 import 'package:board_game_app/features/players/presentation/bloc/players_bloc_event.dart';
 import 'package:board_game_app/features/players/presentation/bloc/players_bloc_state.dart';
@@ -7,8 +6,8 @@ import 'package:board_game_app/features/players/presentation/form/player_form.da
 import 'package:board_game_app/features/players/presentation/player_tile.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/navigation_bar/custom_nav_bar.dart';
-import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
-import 'package:board_game_app/features/shared/modal_form.dart';
+import 'package:board_game_app/features/shared/form/form_launcher.dart';
+import 'package:board_game_app/features/shared/form/modal_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +22,7 @@ class _PlayersPageState extends State<PlayersPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PlayerBloc>().add(LoadPlayers());
+    context.read<PlayerBloc>().add(GetPlayers());
   }
 
   @override
@@ -44,10 +43,10 @@ class _PlayersPageState extends State<PlayersPage> {
                   }),
                 );
               } else if (state is PlayerAdded || state is PlayerEdited) {
-                context.read<PlayerBloc>().add(LoadPlayers());
+                context.read<PlayerBloc>().add(GetPlayers());
                 Navigator.pop(context);
               } else if (state is PlayerDeleted) {
-                context.read<PlayerBloc>().add(LoadPlayers());
+                context.read<PlayerBloc>().add(GetPlayers());
               }
 
               return ListView(children: [Text('Error')]);
@@ -63,10 +62,13 @@ class _PlayersPageState extends State<PlayersPage> {
                 buttons: [
                   NavigationButton(
                     onPressed: () {
-                      openPlayerForm(
+                      openForm(
                         context,
-                        FormAction.add,
-                        context.read<AppSettingsBloc>().state,
+                        PlayerForm(
+                          formAction: FormAction.add,
+                          settingsState: context.read<AppSettingsBloc>().state,
+                          preloadedPlayerEntity: null,
+                        ),
                       );
                     },
                     iconData: Icons.add_sharp,
@@ -79,23 +81,4 @@ class _PlayersPageState extends State<PlayersPage> {
       ),
     );
   }
-}
-
-void openPlayerForm(
-  BuildContext context,
-  FormAction formAction,
-  AppSettingsState settingsState, {
-  PlayerEntity? playerEntity,
-}) {
-  showModalBottomSheet(
-    showDragHandle: true,
-    context: context,
-    builder: (builderContext) {
-      return PlayerForm(
-        formAction: formAction,
-        settingsState: settingsState,
-        preloadedPlayerEntity: playerEntity,
-      );
-    },
-  );
 }
