@@ -1,3 +1,4 @@
+import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,6 +21,7 @@ void main() async {
         BlocProvider(create: (_) => getIt<AppSettingsBloc>()),
         BlocProvider(create: (_) => getIt<BoardGameBloc>()),
         BlocProvider(create: (_) => getIt<PlayerBloc>()),
+        BlocProvider(lazy: false, create: (_) => getIt<AppDataCubit>()..load()),
       ],
       child: BlocBuilder<AppSettingsBloc, AppSettingsState>(
         builder: (context, state) {

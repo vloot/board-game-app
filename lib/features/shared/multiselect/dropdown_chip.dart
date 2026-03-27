@@ -1,18 +1,15 @@
-import 'package:board_game_app/features/shared/multiselect/cubit/dropdown_selector_cubit.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip_data.dart';
 import 'package:flutter/material.dart';
 
 class DropdownChip extends StatelessWidget {
   final DropdownChipData chipData;
   final bool selected;
-  final DropdownChipCubit cubit;
   final Function(bool value) onSelected;
 
   const DropdownChip({
     super.key,
     required this.chipData,
     required this.selected,
-    required this.cubit,
     required this.onSelected,
   });
 

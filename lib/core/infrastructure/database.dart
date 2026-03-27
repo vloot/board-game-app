@@ -1,6 +1,6 @@
 import 'package:board_game_app/features/board_games/data/board_game_table.dart';
-import 'package:board_game_app/features/game_session/data/game_session_table.dart';
-import 'package:board_game_app/features/game_session/data/session_player_table.dart';
+import 'package:board_game_app/features/session/data/tables/game_session_table.dart';
+import 'package:board_game_app/features/session/data/tables/session_player_table.dart';
 import 'package:board_game_app/features/players/data/player_table.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';

@@ -637,21 +637,23 @@ class $GameSessionTableTable extends GameSessionTable
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _timeMeta = const VerificationMeta('time');
+  static const VerificationMeta _playedAtMeta = const VerificationMeta(
+    'playedAt',
+  );
   @override
-  late final GeneratedColumn<DateTime> time = GeneratedColumn<DateTime>(
-    'time',
+  late final GeneratedColumn<DateTime> playedAt = GeneratedColumn<DateTime>(
+    'played_at',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _boardGameIDMeta = const VerificationMeta(
-    'boardGameID',
+  static const VerificationMeta _boardGameIdMeta = const VerificationMeta(
+    'boardGameId',
   );
   @override
-  late final GeneratedColumn<int> boardGameID = GeneratedColumn<int>(
-    'board_game_i_d',
+  late final GeneratedColumn<int> boardGameId = GeneratedColumn<int>(
+    'board_game_id',
     aliasedName,
     false,
     type: DriftSqlType.int,
@@ -660,22 +662,8 @@ class $GameSessionTableTable extends GameSessionTable
       'REFERENCES board_game_table (id)',
     ),
   );
-  static const VerificationMeta _winnerPlayerIDMeta = const VerificationMeta(
-    'winnerPlayerID',
-  );
   @override
-  late final GeneratedColumn<int> winnerPlayerID = GeneratedColumn<int>(
-    'winner_player_i_d',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES player_table (id)',
-    ),
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, time, boardGameID, winnerPlayerID];
+  List<GeneratedColumn> get $columns => [id, playedAt, boardGameId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -691,35 +679,24 @@ class $GameSessionTableTable extends GameSessionTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('time')) {
+    if (data.containsKey('played_at')) {
       context.handle(
-        _timeMeta,
-        time.isAcceptableOrUnknown(data['time']!, _timeMeta),
+        _playedAtMeta,
+        playedAt.isAcceptableOrUnknown(data['played_at']!, _playedAtMeta),
       );
     } else if (isInserting) {
-      context.missing(_timeMeta);
+      context.missing(_playedAtMeta);
     }
-    if (data.containsKey('board_game_i_d')) {
+    if (data.containsKey('board_game_id')) {
       context.handle(
-        _boardGameIDMeta,
-        boardGameID.isAcceptableOrUnknown(
-          data['board_game_i_d']!,
-          _boardGameIDMeta,
+        _boardGameIdMeta,
+        boardGameId.isAcceptableOrUnknown(
+          data['board_game_id']!,
+          _boardGameIdMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_boardGameIDMeta);
-    }
-    if (data.containsKey('winner_player_i_d')) {
-      context.handle(
-        _winnerPlayerIDMeta,
-        winnerPlayerID.isAcceptableOrUnknown(
-          data['winner_player_i_d']!,
-          _winnerPlayerIDMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_winnerPlayerIDMeta);
+      context.missing(_boardGameIdMeta);
     }
     return context;
   }
@@ -734,17 +711,13 @@ class $GameSessionTableTable extends GameSessionTable
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      time: attachedDatabase.typeMapping.read(
+      playedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
-        data['${effectivePrefix}time'],
+        data['${effectivePrefix}played_at'],
       )!,
-      boardGameID: attachedDatabase.typeMapping.read(
+      boardGameId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}board_game_i_d'],
-      )!,
-      winnerPlayerID: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}winner_player_i_d'],
+        data['${effectivePrefix}board_game_id'],
       )!,
     );
   }
@@ -758,31 +731,27 @@ class $GameSessionTableTable extends GameSessionTable
 class GameSessionTableData extends DataClass
     implements Insertable<GameSessionTableData> {
   final int id;
-  final DateTime time;
-  final int boardGameID;
-  final int winnerPlayerID;
+  final DateTime playedAt;
+  final int boardGameId;
   const GameSessionTableData({
     required this.id,
-    required this.time,
-    required this.boardGameID,
-    required this.winnerPlayerID,
+    required this.playedAt,
+    required this.boardGameId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['time'] = Variable<DateTime>(time);
-    map['board_game_i_d'] = Variable<int>(boardGameID);
-    map['winner_player_i_d'] = Variable<int>(winnerPlayerID);
+    map['played_at'] = Variable<DateTime>(playedAt);
+    map['board_game_id'] = Variable<int>(boardGameId);
     return map;
   }
 
   GameSessionTableCompanion toCompanion(bool nullToAbsent) {
     return GameSessionTableCompanion(
       id: Value(id),
-      time: Value(time),
-      boardGameID: Value(boardGameID),
-      winnerPlayerID: Value(winnerPlayerID),
+      playedAt: Value(playedAt),
+      boardGameId: Value(boardGameId),
     );
   }
 
@@ -793,9 +762,8 @@ class GameSessionTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return GameSessionTableData(
       id: serializer.fromJson<int>(json['id']),
-      time: serializer.fromJson<DateTime>(json['time']),
-      boardGameID: serializer.fromJson<int>(json['boardGameID']),
-      winnerPlayerID: serializer.fromJson<int>(json['winnerPlayerID']),
+      playedAt: serializer.fromJson<DateTime>(json['playedAt']),
+      boardGameId: serializer.fromJson<int>(json['boardGameId']),
     );
   }
   @override
@@ -803,33 +771,27 @@ class GameSessionTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'time': serializer.toJson<DateTime>(time),
-      'boardGameID': serializer.toJson<int>(boardGameID),
-      'winnerPlayerID': serializer.toJson<int>(winnerPlayerID),
+      'playedAt': serializer.toJson<DateTime>(playedAt),
+      'boardGameId': serializer.toJson<int>(boardGameId),
     };
   }
 
   GameSessionTableData copyWith({
     int? id,
-    DateTime? time,
-    int? boardGameID,
-    int? winnerPlayerID,
+    DateTime? playedAt,
+    int? boardGameId,
   }) => GameSessionTableData(
     id: id ?? this.id,
-    time: time ?? this.time,
-    boardGameID: boardGameID ?? this.boardGameID,
-    winnerPlayerID: winnerPlayerID ?? this.winnerPlayerID,
+    playedAt: playedAt ?? this.playedAt,
+    boardGameId: boardGameId ?? this.boardGameId,
   );
   GameSessionTableData copyWithCompanion(GameSessionTableCompanion data) {
     return GameSessionTableData(
       id: data.id.present ? data.id.value : this.id,
-      time: data.time.present ? data.time.value : this.time,
-      boardGameID: data.boardGameID.present
-          ? data.boardGameID.value
-          : this.boardGameID,
-      winnerPlayerID: data.winnerPlayerID.present
-          ? data.winnerPlayerID.value
-          : this.winnerPlayerID,
+      playedAt: data.playedAt.present ? data.playedAt.value : this.playedAt,
+      boardGameId: data.boardGameId.present
+          ? data.boardGameId.value
+          : this.boardGameId,
     );
   }
 
@@ -837,69 +799,59 @@ class GameSessionTableData extends DataClass
   String toString() {
     return (StringBuffer('GameSessionTableData(')
           ..write('id: $id, ')
-          ..write('time: $time, ')
-          ..write('boardGameID: $boardGameID, ')
-          ..write('winnerPlayerID: $winnerPlayerID')
+          ..write('playedAt: $playedAt, ')
+          ..write('boardGameId: $boardGameId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, time, boardGameID, winnerPlayerID);
+  int get hashCode => Object.hash(id, playedAt, boardGameId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is GameSessionTableData &&
           other.id == this.id &&
-          other.time == this.time &&
-          other.boardGameID == this.boardGameID &&
-          other.winnerPlayerID == this.winnerPlayerID);
+          other.playedAt == this.playedAt &&
+          other.boardGameId == this.boardGameId);
 }
 
 class GameSessionTableCompanion extends UpdateCompanion<GameSessionTableData> {
   final Value<int> id;
-  final Value<DateTime> time;
-  final Value<int> boardGameID;
-  final Value<int> winnerPlayerID;
+  final Value<DateTime> playedAt;
+  final Value<int> boardGameId;
   const GameSessionTableCompanion({
     this.id = const Value.absent(),
-    this.time = const Value.absent(),
-    this.boardGameID = const Value.absent(),
-    this.winnerPlayerID = const Value.absent(),
+    this.playedAt = const Value.absent(),
+    this.boardGameId = const Value.absent(),
   });
   GameSessionTableCompanion.insert({
     this.id = const Value.absent(),
-    required DateTime time,
-    required int boardGameID,
-    required int winnerPlayerID,
-  }) : time = Value(time),
-       boardGameID = Value(boardGameID),
-       winnerPlayerID = Value(winnerPlayerID);
+    required DateTime playedAt,
+    required int boardGameId,
+  }) : playedAt = Value(playedAt),
+       boardGameId = Value(boardGameId);
   static Insertable<GameSessionTableData> custom({
     Expression<int>? id,
-    Expression<DateTime>? time,
-    Expression<int>? boardGameID,
-    Expression<int>? winnerPlayerID,
+    Expression<DateTime>? playedAt,
+    Expression<int>? boardGameId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (time != null) 'time': time,
-      if (boardGameID != null) 'board_game_i_d': boardGameID,
-      if (winnerPlayerID != null) 'winner_player_i_d': winnerPlayerID,
+      if (playedAt != null) 'played_at': playedAt,
+      if (boardGameId != null) 'board_game_id': boardGameId,
     });
   }
 
   GameSessionTableCompanion copyWith({
     Value<int>? id,
-    Value<DateTime>? time,
-    Value<int>? boardGameID,
-    Value<int>? winnerPlayerID,
+    Value<DateTime>? playedAt,
+    Value<int>? boardGameId,
   }) {
     return GameSessionTableCompanion(
       id: id ?? this.id,
-      time: time ?? this.time,
-      boardGameID: boardGameID ?? this.boardGameID,
-      winnerPlayerID: winnerPlayerID ?? this.winnerPlayerID,
+      playedAt: playedAt ?? this.playedAt,
+      boardGameId: boardGameId ?? this.boardGameId,
     );
   }
 
@@ -909,14 +861,11 @@ class GameSessionTableCompanion extends UpdateCompanion<GameSessionTableData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (time.present) {
-      map['time'] = Variable<DateTime>(time.value);
+    if (playedAt.present) {
+      map['played_at'] = Variable<DateTime>(playedAt.value);
     }
-    if (boardGameID.present) {
-      map['board_game_i_d'] = Variable<int>(boardGameID.value);
-    }
-    if (winnerPlayerID.present) {
-      map['winner_player_i_d'] = Variable<int>(winnerPlayerID.value);
+    if (boardGameId.present) {
+      map['board_game_id'] = Variable<int>(boardGameId.value);
     }
     return map;
   }
@@ -925,9 +874,8 @@ class GameSessionTableCompanion extends UpdateCompanion<GameSessionTableData> {
   String toString() {
     return (StringBuffer('GameSessionTableCompanion(')
           ..write('id: $id, ')
-          ..write('time: $time, ')
-          ..write('boardGameID: $boardGameID, ')
-          ..write('winnerPlayerID: $winnerPlayerID')
+          ..write('playedAt: $playedAt, ')
+          ..write('boardGameId: $boardGameId')
           ..write(')'))
         .toString();
   }
@@ -952,26 +900,26 @@ class $SessionPlayerTableTable extends SessionPlayerTable
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _sessionIDMeta = const VerificationMeta(
-    'sessionID',
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
   );
   @override
-  late final GeneratedColumn<int> sessionID = GeneratedColumn<int>(
-    'session_i_d',
+  late final GeneratedColumn<int> sessionId = GeneratedColumn<int>(
+    'session_id',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES game_session_table (id)',
+      'REFERENCES game_session_table (id) ON DELETE CASCADE',
     ),
   );
-  static const VerificationMeta _playerIDMeta = const VerificationMeta(
-    'playerID',
+  static const VerificationMeta _playerIdMeta = const VerificationMeta(
+    'playerId',
   );
   @override
-  late final GeneratedColumn<int> playerID = GeneratedColumn<int>(
-    'player_i_d',
+  late final GeneratedColumn<int> playerId = GeneratedColumn<int>(
+    'player_id',
     aliasedName,
     false,
     type: DriftSqlType.int,
@@ -989,8 +937,28 @@ class $SessionPlayerTableTable extends SessionPlayerTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isWinnerMeta = const VerificationMeta(
+    'isWinner',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, sessionID, playerID, score];
+  late final GeneratedColumn<bool> isWinner = GeneratedColumn<bool>(
+    'is_winner',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_winner" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sessionId,
+    playerId,
+    score,
+    isWinner,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1006,21 +974,21 @@ class $SessionPlayerTableTable extends SessionPlayerTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('session_i_d')) {
+    if (data.containsKey('session_id')) {
       context.handle(
-        _sessionIDMeta,
-        sessionID.isAcceptableOrUnknown(data['session_i_d']!, _sessionIDMeta),
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
       );
     } else if (isInserting) {
-      context.missing(_sessionIDMeta);
+      context.missing(_sessionIdMeta);
     }
-    if (data.containsKey('player_i_d')) {
+    if (data.containsKey('player_id')) {
       context.handle(
-        _playerIDMeta,
-        playerID.isAcceptableOrUnknown(data['player_i_d']!, _playerIDMeta),
+        _playerIdMeta,
+        playerId.isAcceptableOrUnknown(data['player_id']!, _playerIdMeta),
       );
     } else if (isInserting) {
-      context.missing(_playerIDMeta);
+      context.missing(_playerIdMeta);
     }
     if (data.containsKey('score')) {
       context.handle(
@@ -1030,11 +998,23 @@ class $SessionPlayerTableTable extends SessionPlayerTable
     } else if (isInserting) {
       context.missing(_scoreMeta);
     }
+    if (data.containsKey('is_winner')) {
+      context.handle(
+        _isWinnerMeta,
+        isWinner.isAcceptableOrUnknown(data['is_winner']!, _isWinnerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_isWinnerMeta);
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {sessionId, playerId},
+  ];
   @override
   SessionPlayerTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -1043,17 +1023,21 @@ class $SessionPlayerTableTable extends SessionPlayerTable
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      sessionID: attachedDatabase.typeMapping.read(
+      sessionId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}session_i_d'],
+        data['${effectivePrefix}session_id'],
       )!,
-      playerID: attachedDatabase.typeMapping.read(
+      playerId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
-        data['${effectivePrefix}player_i_d'],
+        data['${effectivePrefix}player_id'],
       )!,
       score: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}score'],
+      )!,
+      isWinner: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_winner'],
       )!,
     );
   }
@@ -1067,31 +1051,35 @@ class $SessionPlayerTableTable extends SessionPlayerTable
 class SessionPlayerTableData extends DataClass
     implements Insertable<SessionPlayerTableData> {
   final int id;
-  final int sessionID;
-  final int playerID;
+  final int sessionId;
+  final int playerId;
   final int score;
+  final bool isWinner;
   const SessionPlayerTableData({
     required this.id,
-    required this.sessionID,
-    required this.playerID,
+    required this.sessionId,
+    required this.playerId,
     required this.score,
+    required this.isWinner,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['session_i_d'] = Variable<int>(sessionID);
-    map['player_i_d'] = Variable<int>(playerID);
+    map['session_id'] = Variable<int>(sessionId);
+    map['player_id'] = Variable<int>(playerId);
     map['score'] = Variable<int>(score);
+    map['is_winner'] = Variable<bool>(isWinner);
     return map;
   }
 
   SessionPlayerTableCompanion toCompanion(bool nullToAbsent) {
     return SessionPlayerTableCompanion(
       id: Value(id),
-      sessionID: Value(sessionID),
-      playerID: Value(playerID),
+      sessionId: Value(sessionId),
+      playerId: Value(playerId),
       score: Value(score),
+      isWinner: Value(isWinner),
     );
   }
 
@@ -1102,9 +1090,10 @@ class SessionPlayerTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SessionPlayerTableData(
       id: serializer.fromJson<int>(json['id']),
-      sessionID: serializer.fromJson<int>(json['sessionID']),
-      playerID: serializer.fromJson<int>(json['playerID']),
+      sessionId: serializer.fromJson<int>(json['sessionId']),
+      playerId: serializer.fromJson<int>(json['playerId']),
       score: serializer.fromJson<int>(json['score']),
+      isWinner: serializer.fromJson<bool>(json['isWinner']),
     );
   }
   @override
@@ -1112,29 +1101,33 @@ class SessionPlayerTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'sessionID': serializer.toJson<int>(sessionID),
-      'playerID': serializer.toJson<int>(playerID),
+      'sessionId': serializer.toJson<int>(sessionId),
+      'playerId': serializer.toJson<int>(playerId),
       'score': serializer.toJson<int>(score),
+      'isWinner': serializer.toJson<bool>(isWinner),
     };
   }
 
   SessionPlayerTableData copyWith({
     int? id,
-    int? sessionID,
-    int? playerID,
+    int? sessionId,
+    int? playerId,
     int? score,
+    bool? isWinner,
   }) => SessionPlayerTableData(
     id: id ?? this.id,
-    sessionID: sessionID ?? this.sessionID,
-    playerID: playerID ?? this.playerID,
+    sessionId: sessionId ?? this.sessionId,
+    playerId: playerId ?? this.playerId,
     score: score ?? this.score,
+    isWinner: isWinner ?? this.isWinner,
   );
   SessionPlayerTableData copyWithCompanion(SessionPlayerTableCompanion data) {
     return SessionPlayerTableData(
       id: data.id.present ? data.id.value : this.id,
-      sessionID: data.sessionID.present ? data.sessionID.value : this.sessionID,
-      playerID: data.playerID.present ? data.playerID.value : this.playerID,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      playerId: data.playerId.present ? data.playerId.value : this.playerId,
       score: data.score.present ? data.score.value : this.score,
+      isWinner: data.isWinner.present ? data.isWinner.value : this.isWinner,
     );
   }
 
@@ -1142,70 +1135,80 @@ class SessionPlayerTableData extends DataClass
   String toString() {
     return (StringBuffer('SessionPlayerTableData(')
           ..write('id: $id, ')
-          ..write('sessionID: $sessionID, ')
-          ..write('playerID: $playerID, ')
-          ..write('score: $score')
+          ..write('sessionId: $sessionId, ')
+          ..write('playerId: $playerId, ')
+          ..write('score: $score, ')
+          ..write('isWinner: $isWinner')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, sessionID, playerID, score);
+  int get hashCode => Object.hash(id, sessionId, playerId, score, isWinner);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SessionPlayerTableData &&
           other.id == this.id &&
-          other.sessionID == this.sessionID &&
-          other.playerID == this.playerID &&
-          other.score == this.score);
+          other.sessionId == this.sessionId &&
+          other.playerId == this.playerId &&
+          other.score == this.score &&
+          other.isWinner == this.isWinner);
 }
 
 class SessionPlayerTableCompanion
     extends UpdateCompanion<SessionPlayerTableData> {
   final Value<int> id;
-  final Value<int> sessionID;
-  final Value<int> playerID;
+  final Value<int> sessionId;
+  final Value<int> playerId;
   final Value<int> score;
+  final Value<bool> isWinner;
   const SessionPlayerTableCompanion({
     this.id = const Value.absent(),
-    this.sessionID = const Value.absent(),
-    this.playerID = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.playerId = const Value.absent(),
     this.score = const Value.absent(),
+    this.isWinner = const Value.absent(),
   });
   SessionPlayerTableCompanion.insert({
     this.id = const Value.absent(),
-    required int sessionID,
-    required int playerID,
+    required int sessionId,
+    required int playerId,
     required int score,
-  }) : sessionID = Value(sessionID),
-       playerID = Value(playerID),
-       score = Value(score);
+    required bool isWinner,
+  }) : sessionId = Value(sessionId),
+       playerId = Value(playerId),
+       score = Value(score),
+       isWinner = Value(isWinner);
   static Insertable<SessionPlayerTableData> custom({
     Expression<int>? id,
-    Expression<int>? sessionID,
-    Expression<int>? playerID,
+    Expression<int>? sessionId,
+    Expression<int>? playerId,
     Expression<int>? score,
+    Expression<bool>? isWinner,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (sessionID != null) 'session_i_d': sessionID,
-      if (playerID != null) 'player_i_d': playerID,
+      if (sessionId != null) 'session_id': sessionId,
+      if (playerId != null) 'player_id': playerId,
       if (score != null) 'score': score,
+      if (isWinner != null) 'is_winner': isWinner,
     });
   }
 
   SessionPlayerTableCompanion copyWith({
     Value<int>? id,
-    Value<int>? sessionID,
-    Value<int>? playerID,
+    Value<int>? sessionId,
+    Value<int>? playerId,
     Value<int>? score,
+    Value<bool>? isWinner,
   }) {
     return SessionPlayerTableCompanion(
       id: id ?? this.id,
-      sessionID: sessionID ?? this.sessionID,
-      playerID: playerID ?? this.playerID,
+      sessionId: sessionId ?? this.sessionId,
+      playerId: playerId ?? this.playerId,
       score: score ?? this.score,
+      isWinner: isWinner ?? this.isWinner,
     );
   }
 
@@ -1215,14 +1218,17 @@ class SessionPlayerTableCompanion
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (sessionID.present) {
-      map['session_i_d'] = Variable<int>(sessionID.value);
+    if (sessionId.present) {
+      map['session_id'] = Variable<int>(sessionId.value);
     }
-    if (playerID.present) {
-      map['player_i_d'] = Variable<int>(playerID.value);
+    if (playerId.present) {
+      map['player_id'] = Variable<int>(playerId.value);
     }
     if (score.present) {
       map['score'] = Variable<int>(score.value);
+    }
+    if (isWinner.present) {
+      map['is_winner'] = Variable<bool>(isWinner.value);
     }
     return map;
   }
@@ -1231,9 +1237,10 @@ class SessionPlayerTableCompanion
   String toString() {
     return (StringBuffer('SessionPlayerTableCompanion(')
           ..write('id: $id, ')
-          ..write('sessionID: $sessionID, ')
-          ..write('playerID: $playerID, ')
-          ..write('score: $score')
+          ..write('sessionId: $sessionId, ')
+          ..write('playerId: $playerId, ')
+          ..write('score: $score, ')
+          ..write('isWinner: $isWinner')
           ..write(')'))
         .toString();
   }
@@ -1259,6 +1266,16 @@ abstract class _$Database extends GeneratedDatabase {
     gameSessionTable,
     sessionPlayerTable,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'game_session_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('session_player_table', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
 
 typedef $$BoardGameTableTableCreateCompanionBuilder =
@@ -1292,7 +1309,7 @@ final class $$BoardGameTableTableReferences
     db.gameSessionTable,
     aliasName: $_aliasNameGenerator(
       db.boardGameTable.id,
-      db.gameSessionTable.boardGameID,
+      db.gameSessionTable.boardGameId,
     ),
   );
 
@@ -1300,7 +1317,7 @@ final class $$BoardGameTableTableReferences
     final manager = $$GameSessionTableTableTableManager(
       $_db,
       $_db.gameSessionTable,
-    ).filter((f) => f.boardGameID.id.sqlEquals($_itemColumn<int>('id')!));
+    ).filter((f) => f.boardGameId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(
       _gameSessionTableRefsTable($_db),
@@ -1352,7 +1369,7 @@ class $$BoardGameTableTableFilterComposer
       composer: this,
       getCurrentColumn: (t) => t.id,
       referencedTable: $db.gameSessionTable,
-      getReferencedColumn: (t) => t.boardGameID,
+      getReferencedColumn: (t) => t.boardGameId,
       builder:
           (
             joinBuilder, {
@@ -1441,7 +1458,7 @@ class $$BoardGameTableTableAnnotationComposer
       composer: this,
       getCurrentColumn: (t) => t.id,
       referencedTable: $db.gameSessionTable,
-      getReferencedColumn: (t) => t.boardGameID,
+      getReferencedColumn: (t) => t.boardGameId,
       builder:
           (
             joinBuilder, {
@@ -1548,7 +1565,7 @@ class $$BoardGameTableTableTableManager
                           ).gameSessionTableRefs,
                       referencedItemsForCurrentItem: (item, referencedItems) =>
                           referencedItems.where(
-                            (e) => e.boardGameID == item.id,
+                            (e) => e.boardGameId == item.id,
                           ),
                       typedResults: items,
                     ),
@@ -1591,29 +1608,6 @@ final class $$PlayerTableTableReferences
     extends BaseReferences<_$Database, $PlayerTableTable, PlayerTableData> {
   $$PlayerTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$GameSessionTableTable, List<GameSessionTableData>>
-  _gameSessionTableRefsTable(_$Database db) => MultiTypedResultKey.fromTable(
-    db.gameSessionTable,
-    aliasName: $_aliasNameGenerator(
-      db.playerTable.id,
-      db.gameSessionTable.winnerPlayerID,
-    ),
-  );
-
-  $$GameSessionTableTableProcessedTableManager get gameSessionTableRefs {
-    final manager = $$GameSessionTableTableTableManager(
-      $_db,
-      $_db.gameSessionTable,
-    ).filter((f) => f.winnerPlayerID.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _gameSessionTableRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
   static MultiTypedResultKey<
     $SessionPlayerTableTable,
     List<SessionPlayerTableData>
@@ -1622,7 +1616,7 @@ final class $$PlayerTableTableReferences
     db.sessionPlayerTable,
     aliasName: $_aliasNameGenerator(
       db.playerTable.id,
-      db.sessionPlayerTable.playerID,
+      db.sessionPlayerTable.playerId,
     ),
   );
 
@@ -1630,7 +1624,7 @@ final class $$PlayerTableTableReferences
     final manager = $$SessionPlayerTableTableTableManager(
       $_db,
       $_db.sessionPlayerTable,
-    ).filter((f) => f.playerID.id.sqlEquals($_itemColumn<int>('id')!));
+    ).filter((f) => f.playerId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(
       _sessionPlayerTableRefsTable($_db),
@@ -1665,31 +1659,6 @@ class $$PlayerTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> gameSessionTableRefs(
-    Expression<bool> Function($$GameSessionTableTableFilterComposer f) f,
-  ) {
-    final $$GameSessionTableTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.gameSessionTable,
-      getReferencedColumn: (t) => t.winnerPlayerID,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$GameSessionTableTableFilterComposer(
-            $db: $db,
-            $table: $db.gameSessionTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
   Expression<bool> sessionPlayerTableRefs(
     Expression<bool> Function($$SessionPlayerTableTableFilterComposer f) f,
   ) {
@@ -1697,7 +1666,7 @@ class $$PlayerTableTableFilterComposer
       composer: this,
       getCurrentColumn: (t) => t.id,
       referencedTable: $db.sessionPlayerTable,
-      getReferencedColumn: (t) => t.playerID,
+      getReferencedColumn: (t) => t.playerId,
       builder:
           (
             joinBuilder, {
@@ -1759,31 +1728,6 @@ class $$PlayerTableTableAnnotationComposer
   GeneratedColumn<int> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
 
-  Expression<T> gameSessionTableRefs<T extends Object>(
-    Expression<T> Function($$GameSessionTableTableAnnotationComposer a) f,
-  ) {
-    final $$GameSessionTableTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.gameSessionTable,
-      getReferencedColumn: (t) => t.winnerPlayerID,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$GameSessionTableTableAnnotationComposer(
-            $db: $db,
-            $table: $db.gameSessionTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
   Expression<T> sessionPlayerTableRefs<T extends Object>(
     Expression<T> Function($$SessionPlayerTableTableAnnotationComposer a) f,
   ) {
@@ -1792,7 +1736,7 @@ class $$PlayerTableTableAnnotationComposer
           composer: this,
           getCurrentColumn: (t) => t.id,
           referencedTable: $db.sessionPlayerTable,
-          getReferencedColumn: (t) => t.playerID,
+          getReferencedColumn: (t) => t.playerId,
           builder:
               (
                 joinBuilder, {
@@ -1824,10 +1768,7 @@ class $$PlayerTableTableTableManager
           $$PlayerTableTableUpdateCompanionBuilder,
           (PlayerTableData, $$PlayerTableTableReferences),
           PlayerTableData,
-          PrefetchHooks Function({
-            bool gameSessionTableRefs,
-            bool sessionPlayerTableRefs,
-          })
+          PrefetchHooks Function({bool sessionPlayerTableRefs})
         > {
   $$PlayerTableTableTableManager(_$Database db, $PlayerTableTable table)
     : super(
@@ -1861,63 +1802,38 @@ class $$PlayerTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback:
-              ({gameSessionTableRefs = false, sessionPlayerTableRefs = false}) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (gameSessionTableRefs) db.gameSessionTable,
-                    if (sessionPlayerTableRefs) db.sessionPlayerTable,
-                  ],
-                  addJoins: null,
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (gameSessionTableRefs)
-                        await $_getPrefetchedData<
-                          PlayerTableData,
-                          $PlayerTableTable,
-                          GameSessionTableData
-                        >(
-                          currentTable: table,
-                          referencedTable: $$PlayerTableTableReferences
-                              ._gameSessionTableRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$PlayerTableTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).gameSessionTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.winnerPlayerID == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (sessionPlayerTableRefs)
-                        await $_getPrefetchedData<
-                          PlayerTableData,
-                          $PlayerTableTable,
-                          SessionPlayerTableData
-                        >(
-                          currentTable: table,
-                          referencedTable: $$PlayerTableTableReferences
-                              ._sessionPlayerTableRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$PlayerTableTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).sessionPlayerTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.playerID == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
+          prefetchHooksCallback: ({sessionPlayerTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (sessionPlayerTableRefs) db.sessionPlayerTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (sessionPlayerTableRefs)
+                    await $_getPrefetchedData<
+                      PlayerTableData,
+                      $PlayerTableTable,
+                      SessionPlayerTableData
+                    >(
+                      currentTable: table,
+                      referencedTable: $$PlayerTableTableReferences
+                          ._sessionPlayerTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$PlayerTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).sessionPlayerTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.playerId == item.id),
+                      typedResults: items,
+                    ),
+                ];
               },
+            );
+          },
         ),
       );
 }
@@ -1934,24 +1850,19 @@ typedef $$PlayerTableTableProcessedTableManager =
       $$PlayerTableTableUpdateCompanionBuilder,
       (PlayerTableData, $$PlayerTableTableReferences),
       PlayerTableData,
-      PrefetchHooks Function({
-        bool gameSessionTableRefs,
-        bool sessionPlayerTableRefs,
-      })
+      PrefetchHooks Function({bool sessionPlayerTableRefs})
     >;
 typedef $$GameSessionTableTableCreateCompanionBuilder =
     GameSessionTableCompanion Function({
       Value<int> id,
-      required DateTime time,
-      required int boardGameID,
-      required int winnerPlayerID,
+      required DateTime playedAt,
+      required int boardGameId,
     });
 typedef $$GameSessionTableTableUpdateCompanionBuilder =
     GameSessionTableCompanion Function({
       Value<int> id,
-      Value<DateTime> time,
-      Value<int> boardGameID,
-      Value<int> winnerPlayerID,
+      Value<DateTime> playedAt,
+      Value<int> boardGameId,
     });
 
 final class $$GameSessionTableTableReferences
@@ -1967,44 +1878,22 @@ final class $$GameSessionTableTableReferences
     super.$_typedResult,
   );
 
-  static $BoardGameTableTable _boardGameIDTable(_$Database db) =>
+  static $BoardGameTableTable _boardGameIdTable(_$Database db) =>
       db.boardGameTable.createAlias(
         $_aliasNameGenerator(
-          db.gameSessionTable.boardGameID,
+          db.gameSessionTable.boardGameId,
           db.boardGameTable.id,
         ),
       );
 
-  $$BoardGameTableTableProcessedTableManager get boardGameID {
-    final $_column = $_itemColumn<int>('board_game_i_d')!;
+  $$BoardGameTableTableProcessedTableManager get boardGameId {
+    final $_column = $_itemColumn<int>('board_game_id')!;
 
     final manager = $$BoardGameTableTableTableManager(
       $_db,
       $_db.boardGameTable,
     ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_boardGameIDTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $PlayerTableTable _winnerPlayerIDTable(_$Database db) =>
-      db.playerTable.createAlias(
-        $_aliasNameGenerator(
-          db.gameSessionTable.winnerPlayerID,
-          db.playerTable.id,
-        ),
-      );
-
-  $$PlayerTableTableProcessedTableManager get winnerPlayerID {
-    final $_column = $_itemColumn<int>('winner_player_i_d')!;
-
-    final manager = $$PlayerTableTableTableManager(
-      $_db,
-      $_db.playerTable,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_winnerPlayerIDTable($_db));
+    final item = $_typedResult.readTableOrNull(_boardGameIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -2019,7 +1908,7 @@ final class $$GameSessionTableTableReferences
     db.sessionPlayerTable,
     aliasName: $_aliasNameGenerator(
       db.gameSessionTable.id,
-      db.sessionPlayerTable.sessionID,
+      db.sessionPlayerTable.sessionId,
     ),
   );
 
@@ -2027,7 +1916,7 @@ final class $$GameSessionTableTableReferences
     final manager = $$SessionPlayerTableTableTableManager(
       $_db,
       $_db.sessionPlayerTable,
-    ).filter((f) => f.sessionID.id.sqlEquals($_itemColumn<int>('id')!));
+    ).filter((f) => f.sessionId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(
       _sessionPlayerTableRefsTable($_db),
@@ -2052,15 +1941,15 @@ class $$GameSessionTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get time => $composableBuilder(
-    column: $table.time,
+  ColumnFilters<DateTime> get playedAt => $composableBuilder(
+    column: $table.playedAt,
     builder: (column) => ColumnFilters(column),
   );
 
-  $$BoardGameTableTableFilterComposer get boardGameID {
+  $$BoardGameTableTableFilterComposer get boardGameId {
     final $$BoardGameTableTableFilterComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.boardGameID,
+      getCurrentColumn: (t) => t.boardGameId,
       referencedTable: $db.boardGameTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2080,29 +1969,6 @@ class $$GameSessionTableTableFilterComposer
     return composer;
   }
 
-  $$PlayerTableTableFilterComposer get winnerPlayerID {
-    final $$PlayerTableTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.winnerPlayerID,
-      referencedTable: $db.playerTable,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlayerTableTableFilterComposer(
-            $db: $db,
-            $table: $db.playerTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
   Expression<bool> sessionPlayerTableRefs(
     Expression<bool> Function($$SessionPlayerTableTableFilterComposer f) f,
   ) {
@@ -2110,7 +1976,7 @@ class $$GameSessionTableTableFilterComposer
       composer: this,
       getCurrentColumn: (t) => t.id,
       referencedTable: $db.sessionPlayerTable,
-      getReferencedColumn: (t) => t.sessionID,
+      getReferencedColumn: (t) => t.sessionId,
       builder:
           (
             joinBuilder, {
@@ -2143,15 +2009,15 @@ class $$GameSessionTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get time => $composableBuilder(
-    column: $table.time,
+  ColumnOrderings<DateTime> get playedAt => $composableBuilder(
+    column: $table.playedAt,
     builder: (column) => ColumnOrderings(column),
   );
 
-  $$BoardGameTableTableOrderingComposer get boardGameID {
+  $$BoardGameTableTableOrderingComposer get boardGameId {
     final $$BoardGameTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.boardGameID,
+      getCurrentColumn: (t) => t.boardGameId,
       referencedTable: $db.boardGameTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2162,29 +2028,6 @@ class $$GameSessionTableTableOrderingComposer
           }) => $$BoardGameTableTableOrderingComposer(
             $db: $db,
             $table: $db.boardGameTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$PlayerTableTableOrderingComposer get winnerPlayerID {
-    final $$PlayerTableTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.winnerPlayerID,
-      referencedTable: $db.playerTable,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlayerTableTableOrderingComposer(
-            $db: $db,
-            $table: $db.playerTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2207,13 +2050,13 @@ class $$GameSessionTableTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get time =>
-      $composableBuilder(column: $table.time, builder: (column) => column);
+  GeneratedColumn<DateTime> get playedAt =>
+      $composableBuilder(column: $table.playedAt, builder: (column) => column);
 
-  $$BoardGameTableTableAnnotationComposer get boardGameID {
+  $$BoardGameTableTableAnnotationComposer get boardGameId {
     final $$BoardGameTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.boardGameID,
+      getCurrentColumn: (t) => t.boardGameId,
       referencedTable: $db.boardGameTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2233,29 +2076,6 @@ class $$GameSessionTableTableAnnotationComposer
     return composer;
   }
 
-  $$PlayerTableTableAnnotationComposer get winnerPlayerID {
-    final $$PlayerTableTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.winnerPlayerID,
-      referencedTable: $db.playerTable,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$PlayerTableTableAnnotationComposer(
-            $db: $db,
-            $table: $db.playerTable,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
   Expression<T> sessionPlayerTableRefs<T extends Object>(
     Expression<T> Function($$SessionPlayerTableTableAnnotationComposer a) f,
   ) {
@@ -2264,7 +2084,7 @@ class $$GameSessionTableTableAnnotationComposer
           composer: this,
           getCurrentColumn: (t) => t.id,
           referencedTable: $db.sessionPlayerTable,
-          getReferencedColumn: (t) => t.sessionID,
+          getReferencedColumn: (t) => t.sessionId,
           builder:
               (
                 joinBuilder, {
@@ -2297,8 +2117,7 @@ class $$GameSessionTableTableTableManager
           (GameSessionTableData, $$GameSessionTableTableReferences),
           GameSessionTableData,
           PrefetchHooks Function({
-            bool boardGameID,
-            bool winnerPlayerID,
+            bool boardGameId,
             bool sessionPlayerTableRefs,
           })
         > {
@@ -2318,26 +2137,22 @@ class $$GameSessionTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<DateTime> time = const Value.absent(),
-                Value<int> boardGameID = const Value.absent(),
-                Value<int> winnerPlayerID = const Value.absent(),
+                Value<DateTime> playedAt = const Value.absent(),
+                Value<int> boardGameId = const Value.absent(),
               }) => GameSessionTableCompanion(
                 id: id,
-                time: time,
-                boardGameID: boardGameID,
-                winnerPlayerID: winnerPlayerID,
+                playedAt: playedAt,
+                boardGameId: boardGameId,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                required DateTime time,
-                required int boardGameID,
-                required int winnerPlayerID,
+                required DateTime playedAt,
+                required int boardGameId,
               }) => GameSessionTableCompanion.insert(
                 id: id,
-                time: time,
-                boardGameID: boardGameID,
-                winnerPlayerID: winnerPlayerID,
+                playedAt: playedAt,
+                boardGameId: boardGameId,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -2348,11 +2163,7 @@ class $$GameSessionTableTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({
-                boardGameID = false,
-                winnerPlayerID = false,
-                sessionPlayerTableRefs = false,
-              }) {
+              ({boardGameId = false, sessionPlayerTableRefs = false}) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
@@ -2374,32 +2185,17 @@ class $$GameSessionTableTableTableManager
                           dynamic
                         >
                       >(state) {
-                        if (boardGameID) {
+                        if (boardGameId) {
                           state =
                               state.withJoin(
                                     currentTable: table,
-                                    currentColumn: table.boardGameID,
+                                    currentColumn: table.boardGameId,
                                     referencedTable:
                                         $$GameSessionTableTableReferences
-                                            ._boardGameIDTable(db),
+                                            ._boardGameIdTable(db),
                                     referencedColumn:
                                         $$GameSessionTableTableReferences
-                                            ._boardGameIDTable(db)
-                                            .id,
-                                  )
-                                  as T;
-                        }
-                        if (winnerPlayerID) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.winnerPlayerID,
-                                    referencedTable:
-                                        $$GameSessionTableTableReferences
-                                            ._winnerPlayerIDTable(db),
-                                    referencedColumn:
-                                        $$GameSessionTableTableReferences
-                                            ._winnerPlayerIDTable(db)
+                                            ._boardGameIdTable(db)
                                             .id,
                                   )
                                   as T;
@@ -2426,7 +2222,7 @@ class $$GameSessionTableTableTableManager
                               ).sessionPlayerTableRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
-                                (e) => e.sessionID == item.id,
+                                (e) => e.sessionId == item.id,
                               ),
                           typedResults: items,
                         ),
@@ -2450,25 +2246,23 @@ typedef $$GameSessionTableTableProcessedTableManager =
       $$GameSessionTableTableUpdateCompanionBuilder,
       (GameSessionTableData, $$GameSessionTableTableReferences),
       GameSessionTableData,
-      PrefetchHooks Function({
-        bool boardGameID,
-        bool winnerPlayerID,
-        bool sessionPlayerTableRefs,
-      })
+      PrefetchHooks Function({bool boardGameId, bool sessionPlayerTableRefs})
     >;
 typedef $$SessionPlayerTableTableCreateCompanionBuilder =
     SessionPlayerTableCompanion Function({
       Value<int> id,
-      required int sessionID,
-      required int playerID,
+      required int sessionId,
+      required int playerId,
       required int score,
+      required bool isWinner,
     });
 typedef $$SessionPlayerTableTableUpdateCompanionBuilder =
     SessionPlayerTableCompanion Function({
       Value<int> id,
-      Value<int> sessionID,
-      Value<int> playerID,
+      Value<int> sessionId,
+      Value<int> playerId,
       Value<int> score,
+      Value<bool> isWinner,
     });
 
 final class $$SessionPlayerTableTableReferences
@@ -2484,41 +2278,41 @@ final class $$SessionPlayerTableTableReferences
     super.$_typedResult,
   );
 
-  static $GameSessionTableTable _sessionIDTable(_$Database db) =>
+  static $GameSessionTableTable _sessionIdTable(_$Database db) =>
       db.gameSessionTable.createAlias(
         $_aliasNameGenerator(
-          db.sessionPlayerTable.sessionID,
+          db.sessionPlayerTable.sessionId,
           db.gameSessionTable.id,
         ),
       );
 
-  $$GameSessionTableTableProcessedTableManager get sessionID {
-    final $_column = $_itemColumn<int>('session_i_d')!;
+  $$GameSessionTableTableProcessedTableManager get sessionId {
+    final $_column = $_itemColumn<int>('session_id')!;
 
     final manager = $$GameSessionTableTableTableManager(
       $_db,
       $_db.gameSessionTable,
     ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_sessionIDTable($_db));
+    final item = $_typedResult.readTableOrNull(_sessionIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
 
-  static $PlayerTableTable _playerIDTable(_$Database db) =>
+  static $PlayerTableTable _playerIdTable(_$Database db) =>
       db.playerTable.createAlias(
-        $_aliasNameGenerator(db.sessionPlayerTable.playerID, db.playerTable.id),
+        $_aliasNameGenerator(db.sessionPlayerTable.playerId, db.playerTable.id),
       );
 
-  $$PlayerTableTableProcessedTableManager get playerID {
-    final $_column = $_itemColumn<int>('player_i_d')!;
+  $$PlayerTableTableProcessedTableManager get playerId {
+    final $_column = $_itemColumn<int>('player_id')!;
 
     final manager = $$PlayerTableTableTableManager(
       $_db,
       $_db.playerTable,
     ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_playerIDTable($_db));
+    final item = $_typedResult.readTableOrNull(_playerIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -2545,10 +2339,15 @@ class $$SessionPlayerTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  $$GameSessionTableTableFilterComposer get sessionID {
+  ColumnFilters<bool> get isWinner => $composableBuilder(
+    column: $table.isWinner,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$GameSessionTableTableFilterComposer get sessionId {
     final $$GameSessionTableTableFilterComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.sessionID,
+      getCurrentColumn: (t) => t.sessionId,
       referencedTable: $db.gameSessionTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2568,10 +2367,10 @@ class $$SessionPlayerTableTableFilterComposer
     return composer;
   }
 
-  $$PlayerTableTableFilterComposer get playerID {
+  $$PlayerTableTableFilterComposer get playerId {
     final $$PlayerTableTableFilterComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.playerID,
+      getCurrentColumn: (t) => t.playerId,
       referencedTable: $db.playerTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2611,10 +2410,15 @@ class $$SessionPlayerTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  $$GameSessionTableTableOrderingComposer get sessionID {
+  ColumnOrderings<bool> get isWinner => $composableBuilder(
+    column: $table.isWinner,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$GameSessionTableTableOrderingComposer get sessionId {
     final $$GameSessionTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.sessionID,
+      getCurrentColumn: (t) => t.sessionId,
       referencedTable: $db.gameSessionTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2634,10 +2438,10 @@ class $$SessionPlayerTableTableOrderingComposer
     return composer;
   }
 
-  $$PlayerTableTableOrderingComposer get playerID {
+  $$PlayerTableTableOrderingComposer get playerId {
     final $$PlayerTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.playerID,
+      getCurrentColumn: (t) => t.playerId,
       referencedTable: $db.playerTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2673,10 +2477,13 @@ class $$SessionPlayerTableTableAnnotationComposer
   GeneratedColumn<int> get score =>
       $composableBuilder(column: $table.score, builder: (column) => column);
 
-  $$GameSessionTableTableAnnotationComposer get sessionID {
+  GeneratedColumn<bool> get isWinner =>
+      $composableBuilder(column: $table.isWinner, builder: (column) => column);
+
+  $$GameSessionTableTableAnnotationComposer get sessionId {
     final $$GameSessionTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.sessionID,
+      getCurrentColumn: (t) => t.sessionId,
       referencedTable: $db.gameSessionTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2696,10 +2503,10 @@ class $$SessionPlayerTableTableAnnotationComposer
     return composer;
   }
 
-  $$PlayerTableTableAnnotationComposer get playerID {
+  $$PlayerTableTableAnnotationComposer get playerId {
     final $$PlayerTableTableAnnotationComposer composer = $composerBuilder(
       composer: this,
-      getCurrentColumn: (t) => t.playerID,
+      getCurrentColumn: (t) => t.playerId,
       referencedTable: $db.playerTable,
       getReferencedColumn: (t) => t.id,
       builder:
@@ -2733,7 +2540,7 @@ class $$SessionPlayerTableTableTableManager
           $$SessionPlayerTableTableUpdateCompanionBuilder,
           (SessionPlayerTableData, $$SessionPlayerTableTableReferences),
           SessionPlayerTableData,
-          PrefetchHooks Function({bool sessionID, bool playerID})
+          PrefetchHooks Function({bool sessionId, bool playerId})
         > {
   $$SessionPlayerTableTableTableManager(
     _$Database db,
@@ -2754,26 +2561,30 @@ class $$SessionPlayerTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<int> sessionID = const Value.absent(),
-                Value<int> playerID = const Value.absent(),
+                Value<int> sessionId = const Value.absent(),
+                Value<int> playerId = const Value.absent(),
                 Value<int> score = const Value.absent(),
+                Value<bool> isWinner = const Value.absent(),
               }) => SessionPlayerTableCompanion(
                 id: id,
-                sessionID: sessionID,
-                playerID: playerID,
+                sessionId: sessionId,
+                playerId: playerId,
                 score: score,
+                isWinner: isWinner,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                required int sessionID,
-                required int playerID,
+                required int sessionId,
+                required int playerId,
                 required int score,
+                required bool isWinner,
               }) => SessionPlayerTableCompanion.insert(
                 id: id,
-                sessionID: sessionID,
-                playerID: playerID,
+                sessionId: sessionId,
+                playerId: playerId,
                 score: score,
+                isWinner: isWinner,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -2783,7 +2594,7 @@ class $$SessionPlayerTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({sessionID = false, playerID = false}) {
+          prefetchHooksCallback: ({sessionId = false, playerId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -2803,32 +2614,32 @@ class $$SessionPlayerTableTableTableManager
                       dynamic
                     >
                   >(state) {
-                    if (sessionID) {
+                    if (sessionId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.sessionID,
+                                currentColumn: table.sessionId,
                                 referencedTable:
                                     $$SessionPlayerTableTableReferences
-                                        ._sessionIDTable(db),
+                                        ._sessionIdTable(db),
                                 referencedColumn:
                                     $$SessionPlayerTableTableReferences
-                                        ._sessionIDTable(db)
+                                        ._sessionIdTable(db)
                                         .id,
                               )
                               as T;
                     }
-                    if (playerID) {
+                    if (playerId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.playerID,
+                                currentColumn: table.playerId,
                                 referencedTable:
                                     $$SessionPlayerTableTableReferences
-                                        ._playerIDTable(db),
+                                        ._playerIdTable(db),
                                 referencedColumn:
                                     $$SessionPlayerTableTableReferences
-                                        ._playerIDTable(db)
+                                        ._playerIdTable(db)
                                         .id,
                               )
                               as T;
@@ -2857,7 +2668,7 @@ typedef $$SessionPlayerTableTableProcessedTableManager =
       $$SessionPlayerTableTableUpdateCompanionBuilder,
       (SessionPlayerTableData, $$SessionPlayerTableTableReferences),
       SessionPlayerTableData,
-      PrefetchHooks Function({bool sessionID, bool playerID})
+      PrefetchHooks Function({bool sessionId, bool playerId})
     >;
 
 class $DatabaseManager {

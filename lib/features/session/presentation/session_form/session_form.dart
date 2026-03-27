@@ -1,9 +1,12 @@
 import 'package:board_game_app/features/board_games/domain/board_game_entity.dart';
-import 'package:board_game_app/features/players/domain/player_entity.dart';
-import 'package:board_game_app/features/session/presentation/bloc/session_bloc.dart';
-import 'package:board_game_app/features/session/presentation/bloc/session_state.dart';
+import 'package:board_game_app/features/session/presentation/bloc/sessions_bloc.dart';
+import 'package:board_game_app/features/session/presentation/bloc/sessions_event.dart';
+import 'package:board_game_app/features/session/presentation/session_form/cubit/session_form_cubit.dart';
+import 'package:board_game_app/features/session/presentation/session_form/session_form_player_list.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
+import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
 import 'package:board_game_app/features/shared/form/modal_form.dart';
+import 'package:board_game_app/features/shared/multiselect/cubit/dropdown_selector_cubit.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip_selector.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip_data.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +15,12 @@ import 'package:intl/intl.dart';
 
 class SessionForm extends StatefulWidget {
   final AppSettingsState settingsState;
-  const SessionForm({super.key, required this.settingsState});
+  final SessionsBloc sessionsBloc;
+  const SessionForm({
+    super.key,
+    required this.settingsState,
+    required this.sessionsBloc,
+  });
 
   @override
   _SessionFormState createState() => _SessionFormState();
@@ -20,14 +28,18 @@ class SessionForm extends StatefulWidget {
 
 class _SessionFormState extends State<SessionForm> {
   final _formKey = GlobalKey<FormState>();
+  bool enableScoring = false;
   DateTime sessionDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SessionFormBloc, SessionFormState>(
-      builder: (context, state) {
-        if (state is SessionFormLoading) {
-          return CircularProgressIndicator();
-        } else if (state is SessionFormLoaded) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => SessionFormCubit()),
+        BlocProvider(create: (_) => DropdownChipCubit<BoardGameEntity>()),
+      ],
+      child: Builder(
+        builder: (context) {
           return ModalForm(
             _formKey,
             formName: 'New session',
@@ -55,6 +67,7 @@ class _SessionFormState extends State<SessionForm> {
                         border: BoxBorder.all(color: Colors.black87),
                         borderRadius: BorderRadius.circular(12),
                       ),
+
                       child: Column(
                         children: [
                           Text(
@@ -80,8 +93,9 @@ class _SessionFormState extends State<SessionForm> {
                       padding: const EdgeInsets.only(left: 12),
                       child: DropdownChipSelector<BoardGameEntity>(
                         palceholder: "Board Game",
-                        items: state.boardGames,
+                        items: context.read<AppDataCubit>().state.games,
                         allowMultiple: false,
+                        cubit: context.read(),
                         getChipData: (item) =>
                             DropdownChipData<BoardGameEntity>(
                               label: item.name,
@@ -91,27 +105,67 @@ class _SessionFormState extends State<SessionForm> {
                       ),
                     ),
                   ),
-                  Checkbox(value: false, onChanged: (value) {}),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Players'),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('Scoring'),
+                        SizedBox(width: 20),
+                        Switch(
+                          value: enableScoring,
+                          onChanged: (value) {
+                            setState(() {
+                              enableScoring = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
 
-              DropdownChipSelector<PlayerEntity>(
-                palceholder: "Players",
-                items: state.players,
-                getChipData: (item) => DropdownChipData<PlayerEntity>(
-                  label: item.name,
-                  color: Color(item.color),
-                  chipValue: item,
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black12,
                 ),
+                padding: EdgeInsets.all(8),
+                child: SessionFormPlayerList(),
               ),
               SizedBox(height: 20),
-              ElevatedButton(onPressed: () {}, child: Text("Save")),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    widget.sessionsBloc.add(
+                      CreateSession(
+                        boardGameId: context
+                            .read<DropdownChipCubit<BoardGameEntity>>()
+                            .state
+                            .selected
+                            .first
+                            .id,
+                        playedAt: sessionDate,
+                        players: context
+                            .read<SessionFormCubit>()
+                            .state
+                            .sessionPlayers,
+                      ),
+                    );
+                  }
+                },
+                child: Text("Save"),
+              ),
             ],
           );
-        }
-
-        return Text('Error');
-      },
+        },
+      ),
     );
   }
 }

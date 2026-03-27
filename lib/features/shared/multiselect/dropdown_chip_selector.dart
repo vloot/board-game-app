@@ -12,6 +12,7 @@ class DropdownChipSelector<T> extends StatelessWidget {
   final List<T> items;
   final DropdownChipData<T> Function(T item) getChipData;
   final bool allowMultiple;
+  final DropdownChipCubit<T> cubit;
 
   const DropdownChipSelector({
     super.key,
@@ -19,11 +20,11 @@ class DropdownChipSelector<T> extends StatelessWidget {
     required this.items,
     required this.getChipData,
     this.allowMultiple = true,
+    required this.cubit,
   });
 
   @override
   Widget build(BuildContext context) {
-    final cubit = DropdownChipCubit<T>();
     return BlocProvider<DropdownChipCubit<T>>(
       create: (_) => cubit,
       child: Padding(
@@ -37,6 +38,7 @@ class DropdownChipSelector<T> extends StatelessWidget {
               getChipData: getChipData,
               items: items,
               allowMultiple: allowMultiple,
+              cubit: cubit,
             ),
           ),
           child: Container(
@@ -65,7 +67,6 @@ class DropdownChipSelector<T> extends StatelessWidget {
                       (index) => DropdownChip(
                         chipData: getChipData(lst[index]),
                         selected: true,
-                        cubit: cubit,
                         onSelected: (value) {
                           cubit.toggle(lst[index]);
                         },
