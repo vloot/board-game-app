@@ -28,7 +28,7 @@ class SessionForm extends StatefulWidget {
 
 class _SessionFormState extends State<SessionForm> {
   final _formKey = GlobalKey<FormState>();
-  bool enableScoring = false;
+  bool enableScoring = true;
   DateTime sessionDate = DateTime.now();
 
   @override
@@ -137,7 +137,7 @@ class _SessionFormState extends State<SessionForm> {
                   color: Colors.black12,
                 ),
                 padding: EdgeInsets.all(8),
-                child: SessionFormPlayerList(),
+                child: SessionFormPlayerList(enableScoring: enableScoring),
               ),
               SizedBox(height: 20),
               ElevatedButton(

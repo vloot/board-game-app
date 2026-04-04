@@ -37,17 +37,8 @@ class _SessionsPageState extends State<SessionsPage> {
                   bloc: context.read<SessionsBloc>(),
                   builder: (context, state) {
                     if (state is SessionsLoaded) {
-                      print(state.sessions.length);
                       return ListView(
-                        children: List.generate(state.sessions.length, (index) {
-                          return Text(
-                            context
-                                .read<AppDataCubit>()
-                                .state
-                                .gamesById[state.sessions[index].id]!
-                                .name,
-                          );
-                        }),
+                        children: generateSessionCards(state, context),
                       );
                     } else if (state is SessionFormSuccess) {
                       context.read<SessionsBloc>().add(LoadSessions());
@@ -87,5 +78,67 @@ class _SessionsPageState extends State<SessionsPage> {
         ),
       ),
     );
+  }
+
+  List<Widget> generateSessionCards(
+    SessionsLoaded state,
+    BuildContext context,
+  ) {
+    return List.generate(state.sessions.length, (index) {
+      final appDataState = context.read<AppDataCubit>().state;
+
+      var playerChips = <Widget>[];
+      var sortedSessionPlayers = state.sessions[index].players;
+      sortedSessionPlayers.sort((a, b) {
+        if (a.isWinner == b.isWinner) return 0;
+        return a.isWinner ? -1 : 1;
+      });
+
+      for (var player in sortedSessionPlayers) {
+        var playerEntity = appDataState.playersById[player.playerId];
+
+        playerChips.add(
+          ChoiceChip(
+            showCheckmark: false,
+            side: BorderSide(
+              color: Color(playerEntity!.color),
+              strokeAlign: 1.5,
+              width: 2,
+            ),
+            label: Text(
+              style: TextStyle(
+                // color: Colors.black,
+                fontWeight: FontWeight.w600,
+              ),
+              player.isWinner ? '🏆 ${playerEntity.name}' : playerEntity.name,
+            ),
+            selectedColor: Color(playerEntity.color).withAlpha(55),
+            selected: true,
+            onSelected: (value) {},
+          ),
+        );
+      }
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  appDataState
+                      .gamesById[state.sessions[index].boardGameId]!
+                      .name,
+                ),
+                Wrap(spacing: 12, runSpacing: 12, children: playerChips),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
   }
 }

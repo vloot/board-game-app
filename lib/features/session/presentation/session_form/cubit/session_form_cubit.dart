@@ -37,7 +37,17 @@ class SessionFormCubit extends Cubit<SessionFormState> {
 
     next.sort((a, b) => b.score.compareTo(a.score));
     emit(SessionFormState(next));
-    print('emittt');
+  }
+
+  void updateSessinPlayerWinStatus(int playerID, bool isWinner) {
+    var next = state.sessionPlayers;
+    try {
+      var player = next.singleWhere((element) => element.playerId == playerID);
+      player.isWinner = isWinner;
+    } catch (e) {
+      return;
+    }
+    emit(SessionFormState(next));
   }
 
   void updateSessionPlayerPointsByID(String playerID, int points) {

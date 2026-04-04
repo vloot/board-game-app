@@ -5,6 +5,7 @@ import 'package:board_game_app/features/players/presentation/form/player_form.da
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:board_game_app/features/shared/form/modal_form.dart';
+import 'package:board_game_app/features/shared/circular_slidable_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -20,21 +21,18 @@ class PlayerTile extends StatelessWidget {
         extentRatio: 0.33,
         motion: const DrawerMotion(),
         children: [
-          SlidableAction(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              bottomLeft: Radius.circular(12),
-            ),
-            onPressed: (context) {
-              context.read<PlayerBloc>().add(DeletePlayer(_playerEntity.id));
-            },
-            backgroundColor: Color(0xFFFE4A49),
-            foregroundColor: Colors.white,
-            icon: Icons.delete_sharp,
-            label: 'Delete',
+          CircularSlidableAction(
+            bgColor: Colors.red,
+            iconColor: Colors.white,
+            iconData: Icons.delete_forever_sharp,
+            onPressed: () =>
+                context.read<PlayerBloc>().add(DeletePlayer(_playerEntity.id)),
           ),
-          SlidableAction(
-            onPressed: (context) {
+          CircularSlidableAction(
+            bgColor: Colors.blueAccent,
+            iconColor: Colors.white,
+            iconData: Icons.edit_sharp,
+            onPressed: () {
               openForm(
                 context,
                 PlayerForm(
@@ -44,10 +42,6 @@ class PlayerTile extends StatelessWidget {
                 ),
               );
             },
-            backgroundColor: Color(0xFF21B7CA),
-            foregroundColor: Colors.white,
-            icon: Icons.edit_sharp,
-            label: 'Edit',
           ),
         ],
       ),

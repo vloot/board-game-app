@@ -40,10 +40,8 @@ class BoardGameBloc extends Bloc<BoardGameEvent, BoardGameState> {
 
   Future<void> _onAdd(AddBoardGame event, Emitter<BoardGameState> emit) async {
     try {
-      print('Adding BG: ${event.boardGame.name}');
       final game = await repo.addBoardGame(event.boardGame);
       emit(BoardGameAddedState(boardGame: game));
-      print('Added: ${event.boardGame.name}');
     } catch (e) {
       emit(BoardGameErrorState(e.toString()));
     }

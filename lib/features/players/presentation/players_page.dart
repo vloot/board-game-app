@@ -37,10 +37,18 @@ class _PlayersPageState extends State<PlayersPage> {
               if (state is PlayerLoading) {
                 // idk
               } else if (state is PlayersLoaded) {
-                return ListView(
-                  children: List.generate(state.players.length, (index) {
-                    return PlayerTile(state.players[index]);
-                  }),
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    splashFactory: NoSplash.splashFactory,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                  ),
+                  child: ListView(
+                    children: List.generate(state.players.length, (index) {
+                      return PlayerTile(state.players[index]);
+                    }),
+                  ),
                 );
               } else if (state is PlayerAdded || state is PlayerEdited) {
                 context.read<PlayerBloc>().add(GetPlayers());

@@ -3,7 +3,7 @@ import 'package:board_game_app/features/board_games/data/board_game_model.dart';
 import 'package:board_game_app/features/board_games/domain/board_game_entity.dart';
 import 'package:board_game_app/features/board_games/domain/board_game_repo.dart';
 
-class BoardGameRepoImpl implements BoardGameRepo {
+class BoardGameRepoImpl extends BoardGameRepo {
   final BoardGameDatasource datasource;
 
   BoardGameRepoImpl(this.datasource);
@@ -13,6 +13,7 @@ class BoardGameRepoImpl implements BoardGameRepo {
     final result = await datasource.addBoardGame(
       BoardGameModel.fromEntity(boardGame),
     );
+    repositoryEvents.notify();
     return result.toEntity();
   }
 
@@ -21,6 +22,7 @@ class BoardGameRepoImpl implements BoardGameRepo {
     final result = await datasource.deleteBoardGame(
       BoardGameModel.fromEntity(boardGame),
     );
+    repositoryEvents.notify();
     return result.toEntity();
   }
 
@@ -29,6 +31,7 @@ class BoardGameRepoImpl implements BoardGameRepo {
     final result = await datasource.editBoardGame(
       BoardGameModel.fromEntity(boardGame),
     );
+    repositoryEvents.notify();
     return result.toEntity();
   }
 

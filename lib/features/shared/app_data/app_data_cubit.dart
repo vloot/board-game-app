@@ -46,7 +46,15 @@ class AppDataCubit extends Cubit<AppDataState> {
   final PlayerRepository playerRepo;
   final BoardGameRepo gameRepo;
 
-  AppDataCubit(this.playerRepo, this.gameRepo) : super(const AppDataState());
+  AppDataCubit(this.playerRepo, this.gameRepo) : super(const AppDataState()) {
+    playerRepo.repositoryEvents.subscribe(((_) {
+      load(force: true);
+    }));
+
+    gameRepo.repositoryEvents.subscribe(((_) {
+      load(force: true);
+    }));
+  }
 
   Future<void> load({bool force = false}) async {
     if (state.isLoading) return;

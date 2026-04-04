@@ -1,8 +1,8 @@
 import 'package:board_game_app/features/session/domain/session_player_entity.dart';
+import 'package:board_game_app/features/session/presentation/session_form/cubit/session_form_cubit.dart';
 import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stroke_text/stroke_text.dart';
 
 class SessionFormPlayerTile extends StatelessWidget {
   const SessionFormPlayerTile(
@@ -12,10 +12,12 @@ class SessionFormPlayerTile extends StatelessWidget {
     required this.onRemove,
     required this.controller,
     required this.focusNode,
+    required this.enableScoring,
   });
 
   final SessionPlayerEntity sessionPlayer;
   final int index;
+  final bool enableScoring;
   final void Function() onRemove;
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -41,28 +43,42 @@ class SessionFormPlayerTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            PlaceIcon(index),
+            Text('${index + 1}'),
             Text(appDataCubit.state.playersById[sessionPlayer.playerId]!.name),
             Row(
               children: [
+                PlaceIcon(
+                  isWinner: sessionPlayer.isWinner,
+                  onPressed: () {
+                    sessionPlayer.isWinner ^= true;
+                    context
+                        .read<SessionFormCubit>()
+                        .updateSessinPlayerWinStatus(
+                          sessionPlayer.playerId,
+                          sessionPlayer.isWinner,
+                        );
+                  },
+                ),
                 SizedBox(
                   width: 75,
-                  child: TextFormField(
-                    focusNode: focusNode,
-                    controller: controller,
-                    selectAllOnFocus: true,
-                    textAlign: TextAlign.center,
-                    textAlignVertical: TextAlignVertical.top,
-                    clipBehavior: Clip.hardEdge,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      alignLabelWithHint: true,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
+                  child: enableScoring
+                      ? TextFormField(
+                          focusNode: focusNode,
+                          controller: controller,
+                          selectAllOnFocus: true,
+                          textAlign: TextAlign.center,
+                          textAlignVertical: TextAlignVertical.top,
+                          clipBehavior: Clip.hardEdge,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            alignLabelWithHint: true,
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        )
+                      : Spacer(),
                 ),
                 IconButton(
                   onPressed: onRemove,
@@ -78,39 +94,22 @@ class SessionFormPlayerTile extends StatelessWidget {
 }
 
 class PlaceIcon extends StatelessWidget {
-  final int index;
-  const PlaceIcon(this.index, {super.key});
+  final void Function() onPressed;
+  final bool isWinner;
+
+  const PlaceIcon({super.key, required this.onPressed, required this.isWinner});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 50,
       width: 40,
-      child: Stack(
-        children: [
-          Icon(
-            Icons.emoji_events_sharp,
-            color: index == 0 ? Colors.amber : Colors.black26,
-            size: 40,
-          ),
-          Positioned(
-            top: 4,
-            left: 15,
-            child: SizedBox(
-              width: 30,
-              child: StrokeText(
-                text: '${index + 1}',
-                textStyle: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                strokeColor: Colors.black,
-                strokeWidth: 1,
-              ),
-            ),
-          ),
-        ],
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Icon(
+          Icons.emoji_events_sharp,
+          color: isWinner ? Colors.amberAccent : Colors.grey,
+        ),
       ),
     );
   }

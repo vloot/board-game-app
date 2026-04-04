@@ -79,7 +79,6 @@ class _PlayerFormState extends State<PlayerForm> {
                 );
               } else if (widget.formAction == FormAction.edit &&
                   widget.preloadedPlayerEntity != null) {
-                print("edit");
                 final updatedEntity = widget.preloadedPlayerEntity?.copyWith(
                   color: color.toARGB32(),
                   name: _name.text,

@@ -11,7 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 
 class SessionFormPlayerList extends StatefulWidget {
-  const SessionFormPlayerList({super.key});
+  final bool enableScoring;
+
+  const SessionFormPlayerList({super.key, required this.enableScoring});
 
   @override
   _SessionFormPlayerListState createState() => _SessionFormPlayerListState();
@@ -80,6 +82,7 @@ class _SessionFormPlayerListState extends State<SessionFormPlayerList> {
             final playerID = player.playerId.toString();
             return SessionFormPlayerTile(
               index,
+              enableScoring: widget.enableScoring,
               sessionPlayer: state.sessionPlayers[index],
               onRemove: () {
                 sessionFormCubit.removeSessionPlayer(

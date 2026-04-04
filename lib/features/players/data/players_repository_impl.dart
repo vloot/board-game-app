@@ -3,7 +3,7 @@ import 'package:board_game_app/features/players/data/player_model.dart';
 import 'package:board_game_app/features/players/domain/player_entity.dart';
 import 'package:board_game_app/features/players/domain/players_repository.dart';
 
-class PlayerRepositoryImpl implements PlayerRepository {
+class PlayerRepositoryImpl extends PlayerRepository {
   final PlayerDatasource datasource;
 
   PlayerRepositoryImpl(this.datasource);
@@ -12,6 +12,7 @@ class PlayerRepositoryImpl implements PlayerRepository {
   Future<PlayerEntity> add(PlayerEntity player) async {
     final model = PlayerModel.fromEntity(player);
     final result = await datasource.add(model);
+    repositoryEvents.notify();
     return result.toEntity();
   }
 
@@ -31,11 +32,13 @@ class PlayerRepositoryImpl implements PlayerRepository {
   Future<PlayerEntity> edit(PlayerEntity player) async {
     final model = PlayerModel.fromEntity(player);
     final result = await datasource.edit(model);
+    repositoryEvents.notify();
     return result.toEntity();
   }
 
   @override
   Future<void> delete(int id) async {
     await datasource.delete(id);
+    repositoryEvents.notify();
   }
 }
