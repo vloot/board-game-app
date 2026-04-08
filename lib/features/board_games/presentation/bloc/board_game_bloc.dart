@@ -11,7 +11,7 @@ class BoardGameBloc extends Bloc<BoardGameEvent, BoardGameState> {
     on<LoadBoardGame>(_onLoadOne);
     on<AddBoardGame>(_onAdd);
     on<EditBoardGame>(_onEdit);
-    on<RemoveBoardGame>(_onRemove);
+    on<DeleteBoardGame>(_onDelete);
   }
 
   Future<void> _onLoadAll(
@@ -59,13 +59,13 @@ class BoardGameBloc extends Bloc<BoardGameEvent, BoardGameState> {
     }
   }
 
-  Future<void> _onRemove(
-    RemoveBoardGame event,
+  Future<void> _onDelete(
+    DeleteBoardGame event,
     Emitter<BoardGameState> emit,
   ) async {
     try {
       final game = await repo.deleteBoardGame(event.boardGame);
-      emit(BoardGameRemovedState(boardGame: game));
+      emit(BoardGameDeletedState(boardGame: game));
     } catch (e) {
       emit(BoardGameErrorState(e.toString()));
     }

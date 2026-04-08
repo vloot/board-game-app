@@ -20,10 +20,10 @@ class BoardGameAddedState implements BoardGameState {
   BoardGameAddedState({required this.boardGame});
 }
 
-class BoardGameRemovedState implements BoardGameState {
+class BoardGameDeletedState implements BoardGameState {
   final BoardGameEntity boardGame;
 
-  BoardGameRemovedState({required this.boardGame});
+  BoardGameDeletedState({required this.boardGame});
 }
 
 class BoardGameEditedState implements BoardGameState {

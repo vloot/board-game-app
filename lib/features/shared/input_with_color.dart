@@ -34,11 +34,14 @@ class _InputWithColorState extends State<InputWithColor> {
   @override
   void initState() {
     super.initState();
-    bgColor =
-        widget.preloadedColor ??
-        Color((Random().nextDouble() * 0xFFFFFF).toInt()).withAlpha(255);
+    if (widget.preloadedColor != null) {
+      bgColor = widget.preloadedColor!;
+    } else {
+      bgColor = Color(
+        (Random().nextDouble() * 0xFFFFFF).toInt(),
+      ).withAlpha(255);
+    }
     widget.onColorPicked(bgColor);
-    widget.textController.text = widget.preloadedValue ?? '';
   }
 
   @override

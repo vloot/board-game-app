@@ -4,6 +4,8 @@ class PlayerCount {
 
   PlayerCount({required this.min, required this.max});
 
+  bool isFilled() => min != 0 && max != 0;
+
   @override
   String toString() {
     if (min != 0 && max != 0) {

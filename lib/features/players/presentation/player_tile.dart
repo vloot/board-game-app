@@ -5,7 +5,7 @@ import 'package:board_game_app/features/players/presentation/form/player_form.da
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:board_game_app/features/shared/form/modal_form.dart';
-import 'package:board_game_app/features/shared/circular_slidable_action.dart';
+import 'package:board_game_app/features/shared/slidable/circular_slidable_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';

@@ -11,8 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BoardGameForm extends StatefulWidget {
   final AppSettingsState settingsState;
+  final BoardGameEntity? boardGame;
 
-  const BoardGameForm({super.key, required this.settingsState});
+  const BoardGameForm({super.key, required this.settingsState, this.boardGame});
 
   @override
   _BoardGameFormState createState() => _BoardGameFormState();
@@ -20,15 +21,41 @@ class BoardGameForm extends StatefulWidget {
 
 class _BoardGameFormState extends State<BoardGameForm> {
   final TextEditingController _bgNameController = TextEditingController();
-  final TextEditingController _minPlayers = TextEditingController();
-  final TextEditingController _maxPlayers = TextEditingController();
+  late final TextEditingController _minPlayers;
+  late final TextEditingController _maxPlayers;
   final _formKey = GlobalKey<FormState>();
   Color pickedColor = Colors.white;
 
   bool isValidated = true;
+  bool isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _minPlayers = TextEditingController();
+    _maxPlayers = TextEditingController();
+  }
+
+  String getPlayerCountString(int number) {
+    if (number == 0) {
+      return '';
+    }
+    return number.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.boardGame != null) {
+      isEditing = true;
+      _bgNameController.text = widget.boardGame!.name;
+      _minPlayers.text = getPlayerCountString(
+        widget.boardGame!.playerCount.min,
+      );
+      _maxPlayers.text = getPlayerCountString(
+        widget.boardGame!.playerCount.max,
+      );
+    }
+
     return ModalForm(
       _formKey,
       formAction: FormAction.add,
@@ -39,6 +66,9 @@ class _BoardGameFormState extends State<BoardGameForm> {
           textController: _bgNameController,
           settingsState: widget.settingsState,
           onColorPicked: (color) => pickedColor = color,
+          preloadedColor: widget.boardGame == null
+              ? null
+              : Color(widget.boardGame!.color),
         ),
         SizedBox(height: 20),
         Row(
@@ -59,7 +89,26 @@ class _BoardGameFormState extends State<BoardGameForm> {
                   isValidated = _formKey.currentState!.validate();
                 });
 
-                if (isValidated) {
+                if (!isValidated) {
+                  return;
+                }
+
+                if (isEditing) {
+                  context.read<BoardGameBloc>().add(
+                    EditBoardGame(
+                      BoardGameEntity(
+                        id: widget.boardGame!.id,
+                        playerCount: PlayerCount(
+                          min: int.tryParse(_minPlayers.text) ?? 0,
+                          max: int.tryParse(_maxPlayers.text) ?? 0,
+                        ),
+                        name: _bgNameController.text,
+                        color: pickedColor.toARGB32(),
+                      ),
+                    ),
+                  );
+                } else {
+                  // adding new board game
                   context.read<BoardGameBloc>().add(
                     AddBoardGame(
                       BoardGameEntity(

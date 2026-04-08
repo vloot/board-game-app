@@ -22,8 +22,8 @@ class EditBoardGame extends BoardGameEvent {
   EditBoardGame(this.boardGame);
 }
 
-class RemoveBoardGame extends BoardGameEvent {
+class DeleteBoardGame extends BoardGameEvent {
   final BoardGameEntity boardGame;
 
-  RemoveBoardGame(this.boardGame);
+  DeleteBoardGame(this.boardGame);
 }

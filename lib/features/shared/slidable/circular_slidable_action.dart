@@ -7,19 +7,22 @@ class CircularSlidableAction extends StatelessWidget {
   final IconData iconData;
   final Function() onPressed;
 
+  final double vPadding;
+
   const CircularSlidableAction({
     super.key,
     required this.bgColor,
     required this.iconColor,
     required this.iconData,
     required this.onPressed,
+    this.vPadding = 3,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
+        padding: EdgeInsets.symmetric(vertical: vPadding),
         child: Container(
           decoration: BoxDecoration(shape: BoxShape.circle, color: bgColor),
           child: SizedBox(
