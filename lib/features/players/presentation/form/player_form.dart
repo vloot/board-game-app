@@ -39,21 +39,20 @@ class _PlayerFormState extends State<PlayerForm> {
   @override
   Widget build(BuildContext context) {
     Color? preloadedColor;
-    String? preloadedValue;
 
-    if (widget.preloadedPlayerEntity != null) {
+    if (widget.formAction == FormAction.edit &&
+        widget.preloadedPlayerEntity != null) {
       preloadedColor = Color(widget.preloadedPlayerEntity!.color);
-      preloadedValue = widget.preloadedPlayerEntity!.name;
+      _name.text = widget.preloadedPlayerEntity!.name;
     }
 
     return ModalForm(
       _formKey,
-      formAction: preloadedValue == null ? FormAction.add : FormAction.edit,
+      formAction: widget.formAction,
       formName: 'New Player',
       children: [
         InputWithColor(
           preloadedColor: preloadedColor,
-          preloadedValue: preloadedValue,
           textController: _name,
           settingsState: context.read<AppSettingsBloc>().state,
           onColorPicked: (color) => this.color = color,

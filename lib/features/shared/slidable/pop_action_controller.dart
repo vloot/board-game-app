@@ -11,7 +11,7 @@ class PopActionController {
     _actions.remove(action);
   }
 
-  /// returns true if handled (consumed back press)
+  /// returns true if handled
   bool handlePop() {
     if (_actions.isNotEmpty) {
       for (final a in List.of(_actions)) {

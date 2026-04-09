@@ -9,7 +9,6 @@ class InputWithColor extends StatefulWidget {
   final TextEditingController textController;
   final AppSettingsState settingsState;
 
-  final String? preloadedValue;
   final Color? preloadedColor;
 
   final void Function(Color color) onColorPicked;
@@ -20,7 +19,6 @@ class InputWithColor extends StatefulWidget {
     required this.settingsState,
     required this.onColorPicked,
     required this.labelText,
-    this.preloadedValue,
     this.preloadedColor,
   });
 
