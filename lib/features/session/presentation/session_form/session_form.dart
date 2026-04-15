@@ -9,6 +9,7 @@ import 'package:board_game_app/features/shared/form/modal_form.dart';
 import 'package:board_game_app/features/shared/multiselect/cubit/dropdown_selector_cubit.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip_selector.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip_data.dart';
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,8 @@ class _SessionFormState extends State<SessionForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => SessionFormCubit()),
@@ -42,7 +45,7 @@ class _SessionFormState extends State<SessionForm> {
         builder: (context) {
           return ModalForm(
             _formKey,
-            formName: 'New session',
+            formName: l10n.newSession,
             formAction: FormAction.add,
             children: [
               Row(
@@ -92,8 +95,8 @@ class _SessionFormState extends State<SessionForm> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 12),
                       child: DropdownChipSelector<BoardGameEntity>(
-                        palceholder: "Board Game",
-                        items: context.read<AppDataCubit>().state.games,
+                        palceholder: l10n.bgName,
+                        items: context.read<AppDataCubit>().state.activeGames,
                         allowMultiple: false,
                         cubit: context.read(),
                         getChipData: (item) =>
@@ -110,12 +113,12 @@ class _SessionFormState extends State<SessionForm> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Players'),
+                  Text(l10n.players),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text('Scoring'),
+                        Text(l10n.scoring),
                         SizedBox(width: 20),
                         Switch(
                           value: enableScoring,
@@ -134,9 +137,8 @@ class _SessionFormState extends State<SessionForm> {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.black12,
                 ),
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: SessionFormPlayerList(enableScoring: enableScoring),
               ),
               SizedBox(height: 20),
@@ -160,7 +162,7 @@ class _SessionFormState extends State<SessionForm> {
                     );
                   }
                 },
-                child: Text("Save"),
+                child: Text(l10n.save),
               ),
             ],
           );

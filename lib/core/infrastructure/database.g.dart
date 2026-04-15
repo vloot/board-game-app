@@ -66,6 +66,21 @@ class $BoardGameTableTable extends BoardGameTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -73,6 +88,7 @@ class $BoardGameTableTable extends BoardGameTable
     minPlayerCount,
     maxPlayerCount,
     color,
+    isDeleted,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -127,6 +143,12 @@ class $BoardGameTableTable extends BoardGameTable
     } else if (isInserting) {
       context.missing(_colorMeta);
     }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
     return context;
   }
 
@@ -156,6 +178,10 @@ class $BoardGameTableTable extends BoardGameTable
         DriftSqlType.int,
         data['${effectivePrefix}color'],
       )!,
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      )!,
     );
   }
 
@@ -172,12 +198,14 @@ class BoardGameTableData extends DataClass
   final int minPlayerCount;
   final int maxPlayerCount;
   final int color;
+  final bool isDeleted;
   const BoardGameTableData({
     required this.id,
     required this.name,
     required this.minPlayerCount,
     required this.maxPlayerCount,
     required this.color,
+    required this.isDeleted,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -187,6 +215,7 @@ class BoardGameTableData extends DataClass
     map['min_player_count'] = Variable<int>(minPlayerCount);
     map['max_player_count'] = Variable<int>(maxPlayerCount);
     map['color'] = Variable<int>(color);
+    map['is_deleted'] = Variable<bool>(isDeleted);
     return map;
   }
 
@@ -197,6 +226,7 @@ class BoardGameTableData extends DataClass
       minPlayerCount: Value(minPlayerCount),
       maxPlayerCount: Value(maxPlayerCount),
       color: Value(color),
+      isDeleted: Value(isDeleted),
     );
   }
 
@@ -211,6 +241,7 @@ class BoardGameTableData extends DataClass
       minPlayerCount: serializer.fromJson<int>(json['minPlayerCount']),
       maxPlayerCount: serializer.fromJson<int>(json['maxPlayerCount']),
       color: serializer.fromJson<int>(json['color']),
+      isDeleted: serializer.fromJson<bool>(json['isDeleted']),
     );
   }
   @override
@@ -222,6 +253,7 @@ class BoardGameTableData extends DataClass
       'minPlayerCount': serializer.toJson<int>(minPlayerCount),
       'maxPlayerCount': serializer.toJson<int>(maxPlayerCount),
       'color': serializer.toJson<int>(color),
+      'isDeleted': serializer.toJson<bool>(isDeleted),
     };
   }
 
@@ -231,12 +263,14 @@ class BoardGameTableData extends DataClass
     int? minPlayerCount,
     int? maxPlayerCount,
     int? color,
+    bool? isDeleted,
   }) => BoardGameTableData(
     id: id ?? this.id,
     name: name ?? this.name,
     minPlayerCount: minPlayerCount ?? this.minPlayerCount,
     maxPlayerCount: maxPlayerCount ?? this.maxPlayerCount,
     color: color ?? this.color,
+    isDeleted: isDeleted ?? this.isDeleted,
   );
   BoardGameTableData copyWithCompanion(BoardGameTableCompanion data) {
     return BoardGameTableData(
@@ -249,6 +283,7 @@ class BoardGameTableData extends DataClass
           ? data.maxPlayerCount.value
           : this.maxPlayerCount,
       color: data.color.present ? data.color.value : this.color,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
     );
   }
 
@@ -259,14 +294,15 @@ class BoardGameTableData extends DataClass
           ..write('name: $name, ')
           ..write('minPlayerCount: $minPlayerCount, ')
           ..write('maxPlayerCount: $maxPlayerCount, ')
-          ..write('color: $color')
+          ..write('color: $color, ')
+          ..write('isDeleted: $isDeleted')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode =>
-      Object.hash(id, name, minPlayerCount, maxPlayerCount, color);
+      Object.hash(id, name, minPlayerCount, maxPlayerCount, color, isDeleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -275,7 +311,8 @@ class BoardGameTableData extends DataClass
           other.name == this.name &&
           other.minPlayerCount == this.minPlayerCount &&
           other.maxPlayerCount == this.maxPlayerCount &&
-          other.color == this.color);
+          other.color == this.color &&
+          other.isDeleted == this.isDeleted);
 }
 
 class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
@@ -284,12 +321,14 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
   final Value<int> minPlayerCount;
   final Value<int> maxPlayerCount;
   final Value<int> color;
+  final Value<bool> isDeleted;
   const BoardGameTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.minPlayerCount = const Value.absent(),
     this.maxPlayerCount = const Value.absent(),
     this.color = const Value.absent(),
+    this.isDeleted = const Value.absent(),
   });
   BoardGameTableCompanion.insert({
     this.id = const Value.absent(),
@@ -297,6 +336,7 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
     required int minPlayerCount,
     required int maxPlayerCount,
     required int color,
+    this.isDeleted = const Value.absent(),
   }) : name = Value(name),
        minPlayerCount = Value(minPlayerCount),
        maxPlayerCount = Value(maxPlayerCount),
@@ -307,6 +347,7 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
     Expression<int>? minPlayerCount,
     Expression<int>? maxPlayerCount,
     Expression<int>? color,
+    Expression<bool>? isDeleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -314,6 +355,7 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
       if (minPlayerCount != null) 'min_player_count': minPlayerCount,
       if (maxPlayerCount != null) 'max_player_count': maxPlayerCount,
       if (color != null) 'color': color,
+      if (isDeleted != null) 'is_deleted': isDeleted,
     });
   }
 
@@ -323,6 +365,7 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
     Value<int>? minPlayerCount,
     Value<int>? maxPlayerCount,
     Value<int>? color,
+    Value<bool>? isDeleted,
   }) {
     return BoardGameTableCompanion(
       id: id ?? this.id,
@@ -330,6 +373,7 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
       minPlayerCount: minPlayerCount ?? this.minPlayerCount,
       maxPlayerCount: maxPlayerCount ?? this.maxPlayerCount,
       color: color ?? this.color,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -351,6 +395,9 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
     if (color.present) {
       map['color'] = Variable<int>(color.value);
     }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
     return map;
   }
 
@@ -361,7 +408,8 @@ class BoardGameTableCompanion extends UpdateCompanion<BoardGameTableData> {
           ..write('name: $name, ')
           ..write('minPlayerCount: $minPlayerCount, ')
           ..write('maxPlayerCount: $maxPlayerCount, ')
-          ..write('color: $color')
+          ..write('color: $color, ')
+          ..write('isDeleted: $isDeleted')
           ..write(')'))
         .toString();
   }
@@ -408,8 +456,23 @@ class $PlayerTableTable extends PlayerTable
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, name, color];
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, color, isDeleted];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -441,6 +504,12 @@ class $PlayerTableTable extends PlayerTable
     } else if (isInserting) {
       context.missing(_colorMeta);
     }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
     return context;
   }
 
@@ -462,6 +531,10 @@ class $PlayerTableTable extends PlayerTable
         DriftSqlType.int,
         data['${effectivePrefix}color'],
       )!,
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      )!,
     );
   }
 
@@ -475,10 +548,12 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
   final int id;
   final String name;
   final int color;
+  final bool isDeleted;
   const PlayerTableData({
     required this.id,
     required this.name,
     required this.color,
+    required this.isDeleted,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -486,6 +561,7 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['color'] = Variable<int>(color);
+    map['is_deleted'] = Variable<bool>(isDeleted);
     return map;
   }
 
@@ -494,6 +570,7 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
       id: Value(id),
       name: Value(name),
       color: Value(color),
+      isDeleted: Value(isDeleted),
     );
   }
 
@@ -506,6 +583,7 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       color: serializer.fromJson<int>(json['color']),
+      isDeleted: serializer.fromJson<bool>(json['isDeleted']),
     );
   }
   @override
@@ -515,20 +593,27 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'color': serializer.toJson<int>(color),
+      'isDeleted': serializer.toJson<bool>(isDeleted),
     };
   }
 
-  PlayerTableData copyWith({int? id, String? name, int? color}) =>
-      PlayerTableData(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        color: color ?? this.color,
-      );
+  PlayerTableData copyWith({
+    int? id,
+    String? name,
+    int? color,
+    bool? isDeleted,
+  }) => PlayerTableData(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    color: color ?? this.color,
+    isDeleted: isDeleted ?? this.isDeleted,
+  );
   PlayerTableData copyWithCompanion(PlayerTableCompanion data) {
     return PlayerTableData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       color: data.color.present ? data.color.value : this.color,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
     );
   }
 
@@ -537,46 +622,53 @@ class PlayerTableData extends DataClass implements Insertable<PlayerTableData> {
     return (StringBuffer('PlayerTableData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('color: $color')
+          ..write('color: $color, ')
+          ..write('isDeleted: $isDeleted')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, color);
+  int get hashCode => Object.hash(id, name, color, isDeleted);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PlayerTableData &&
           other.id == this.id &&
           other.name == this.name &&
-          other.color == this.color);
+          other.color == this.color &&
+          other.isDeleted == this.isDeleted);
 }
 
 class PlayerTableCompanion extends UpdateCompanion<PlayerTableData> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> color;
+  final Value<bool> isDeleted;
   const PlayerTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.color = const Value.absent(),
+    this.isDeleted = const Value.absent(),
   });
   PlayerTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required int color,
+    this.isDeleted = const Value.absent(),
   }) : name = Value(name),
        color = Value(color);
   static Insertable<PlayerTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<int>? color,
+    Expression<bool>? isDeleted,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (color != null) 'color': color,
+      if (isDeleted != null) 'is_deleted': isDeleted,
     });
   }
 
@@ -584,11 +676,13 @@ class PlayerTableCompanion extends UpdateCompanion<PlayerTableData> {
     Value<int>? id,
     Value<String>? name,
     Value<int>? color,
+    Value<bool>? isDeleted,
   }) {
     return PlayerTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       color: color ?? this.color,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -604,6 +698,9 @@ class PlayerTableCompanion extends UpdateCompanion<PlayerTableData> {
     if (color.present) {
       map['color'] = Variable<int>(color.value);
     }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
     return map;
   }
 
@@ -612,7 +709,8 @@ class PlayerTableCompanion extends UpdateCompanion<PlayerTableData> {
     return (StringBuffer('PlayerTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('color: $color')
+          ..write('color: $color, ')
+          ..write('isDeleted: $isDeleted')
           ..write(')'))
         .toString();
   }
@@ -1285,6 +1383,7 @@ typedef $$BoardGameTableTableCreateCompanionBuilder =
       required int minPlayerCount,
       required int maxPlayerCount,
       required int color,
+      Value<bool> isDeleted,
     });
 typedef $$BoardGameTableTableUpdateCompanionBuilder =
     BoardGameTableCompanion Function({
@@ -1293,6 +1392,7 @@ typedef $$BoardGameTableTableUpdateCompanionBuilder =
       Value<int> minPlayerCount,
       Value<int> maxPlayerCount,
       Value<int> color,
+      Value<bool> isDeleted,
     });
 
 final class $$BoardGameTableTableReferences
@@ -1362,6 +1462,11 @@ class $$BoardGameTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> gameSessionTableRefs(
     Expression<bool> Function($$GameSessionTableTableFilterComposer f) f,
   ) {
@@ -1421,6 +1526,11 @@ class $$BoardGameTableTableOrderingComposer
     column: $table.color,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$BoardGameTableTableAnnotationComposer
@@ -1450,6 +1560,9 @@ class $$BoardGameTableTableAnnotationComposer
 
   GeneratedColumn<int> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
 
   Expression<T> gameSessionTableRefs<T extends Object>(
     Expression<T> Function($$GameSessionTableTableAnnotationComposer a) f,
@@ -1510,12 +1623,14 @@ class $$BoardGameTableTableTableManager
                 Value<int> minPlayerCount = const Value.absent(),
                 Value<int> maxPlayerCount = const Value.absent(),
                 Value<int> color = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
               }) => BoardGameTableCompanion(
                 id: id,
                 name: name,
                 minPlayerCount: minPlayerCount,
                 maxPlayerCount: maxPlayerCount,
                 color: color,
+                isDeleted: isDeleted,
               ),
           createCompanionCallback:
               ({
@@ -1524,12 +1639,14 @@ class $$BoardGameTableTableTableManager
                 required int minPlayerCount,
                 required int maxPlayerCount,
                 required int color,
+                Value<bool> isDeleted = const Value.absent(),
               }) => BoardGameTableCompanion.insert(
                 id: id,
                 name: name,
                 minPlayerCount: minPlayerCount,
                 maxPlayerCount: maxPlayerCount,
                 color: color,
+                isDeleted: isDeleted,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -1596,12 +1713,14 @@ typedef $$PlayerTableTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required int color,
+      Value<bool> isDeleted,
     });
 typedef $$PlayerTableTableUpdateCompanionBuilder =
     PlayerTableCompanion Function({
       Value<int> id,
       Value<String> name,
       Value<int> color,
+      Value<bool> isDeleted,
     });
 
 final class $$PlayerTableTableReferences
@@ -1659,6 +1778,11 @@ class $$PlayerTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> sessionPlayerTableRefs(
     Expression<bool> Function($$SessionPlayerTableTableFilterComposer f) f,
   ) {
@@ -1708,6 +1832,11 @@ class $$PlayerTableTableOrderingComposer
     column: $table.color,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PlayerTableTableAnnotationComposer
@@ -1727,6 +1856,9 @@ class $$PlayerTableTableAnnotationComposer
 
   GeneratedColumn<int> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
 
   Expression<T> sessionPlayerTableRefs<T extends Object>(
     Expression<T> Function($$SessionPlayerTableTableAnnotationComposer a) f,
@@ -1786,14 +1918,25 @@ class $$PlayerTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<int> color = const Value.absent(),
-              }) => PlayerTableCompanion(id: id, name: name, color: color),
+                Value<bool> isDeleted = const Value.absent(),
+              }) => PlayerTableCompanion(
+                id: id,
+                name: name,
+                color: color,
+                isDeleted: isDeleted,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
                 required int color,
-              }) =>
-                  PlayerTableCompanion.insert(id: id, name: name, color: color),
+                Value<bool> isDeleted = const Value.absent(),
+              }) => PlayerTableCompanion.insert(
+                id: id,
+                name: name,
+                color: color,
+                isDeleted: isDeleted,
+              ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (

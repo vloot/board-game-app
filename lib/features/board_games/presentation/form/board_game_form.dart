@@ -6,6 +6,7 @@ import 'package:board_game_app/features/board_games/presentation/form/double_inp
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
 import 'package:board_game_app/features/shared/input_with_color.dart';
 import 'package:board_game_app/features/shared/form/modal_form.dart';
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,6 +46,8 @@ class _BoardGameFormState extends State<BoardGameForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (widget.boardGame != null) {
       isEditing = true;
       _bgNameController.text = widget.boardGame!.name;
@@ -59,10 +62,10 @@ class _BoardGameFormState extends State<BoardGameForm> {
     return ModalForm(
       _formKey,
       formAction: FormAction.add,
-      formName: "New Board Game",
+      formName: l10n.newBG,
       children: [
         InputWithColor(
-          labelText: "Board Game",
+          labelText: l10n.bgName,
           textController: _bgNameController,
           settingsState: widget.settingsState,
           onColorPicked: (color) => pickedColor = color,
@@ -128,7 +131,7 @@ class _BoardGameFormState extends State<BoardGameForm> {
                 }
               },
               style: ElevatedButton.styleFrom(minimumSize: Size(200, 50)),
-              child: Text('Save'),
+              child: Text(l10n.save),
             ),
           ],
         ),

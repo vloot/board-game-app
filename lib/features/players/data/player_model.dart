@@ -6,12 +6,23 @@ class PlayerModel {
   final int id;
   final String name;
   final int color;
+  final bool isDeleted;
 
-  PlayerModel({required this.id, required this.name, required this.color});
+  PlayerModel({
+    required this.id,
+    required this.name,
+    required this.color,
+    this.isDeleted = false,
+  });
 
   /// From Drift data class
   factory PlayerModel.fromData(PlayerTableData data) {
-    return PlayerModel(id: data.id, name: data.name, color: data.color);
+    return PlayerModel(
+      id: data.id,
+      name: data.name,
+      color: data.color,
+      isDeleted: data.isDeleted,
+    );
   }
 
   /// To Drift companion (for insert/update)
@@ -30,14 +41,15 @@ class PlayerModel {
 
   /// To Entity
   PlayerEntity toEntity() {
-    return PlayerEntity(id: id, name: name, color: color);
+    return PlayerEntity(id: id, name: name, color: color, isDeleted: isDeleted);
   }
 
-  PlayerModel copyWith({int? id, String? name, int? color}) {
+  PlayerModel copyWith({int? id, String? name, int? color, bool? isDeleted}) {
     return PlayerModel(
       id: id ?? this.id,
       name: name ?? this.name,
       color: color ?? this.color,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 }

@@ -63,7 +63,7 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   Future<void> _onDelete(DeletePlayer event, Emitter<PlayerState> emit) async {
     emit(PlayerLoading());
     try {
-      await repo.delete(event.id);
+      await repo.delete(event.id, softDelete: true);
       emit(PlayerDeleted());
     } catch (e) {
       emit(PlayerError(e.toString()));

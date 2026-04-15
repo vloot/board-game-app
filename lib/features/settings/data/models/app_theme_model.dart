@@ -31,33 +31,33 @@ class AppThemeModel {
   });
 
   static final defaultSettingsDark = AppThemeModel(
-    primaryColor: 0xAEF78E,
-    primaryColorAccent: 0x66A182,
-    secondaryColor: 0x9FA0C3,
-    secondaryColorAccent: 0xA18276,
+    primaryColor: Colors.orange.toARGB32(),
+    primaryColorAccent: Colors.orangeAccent.toARGB32(),
+    secondaryColor: const Color.fromARGB(255, 22, 22, 22).toARGB32(),
+    secondaryColorAccent: const Color.fromARGB(255, 105, 105, 105).toARGB32(),
     activeColor: const Color.fromARGB(255, 51, 118, 53).toARGB32(),
     inactiveColor: Colors.blueGrey.toARGB32(),
     warningColor: Colors.redAccent.toARGB32(),
     backgroundColor: Colors.black.toARGB32(),
     backgroundOverlayColor: const Color.fromARGB(255, 20, 20, 20).toARGB32(),
-    textColor: 0x2E4057,
+    textColor: const Color.fromARGB(255, 211, 218, 217).toARGB32(),
     transparent: Colors.transparent.toARGB32(),
-    shadowColor: Colors.black54.toARGB32(),
+    shadowColor: Colors.white24.toARGB32(),
   );
 
   static final defaultSettingsLight = AppThemeModel(
-    primaryColor: Color.fromARGB(255, 174, 247, 142).toARGB32(),
+    primaryColor: 0xFF114B5F,
     primaryColorAccent: Color.fromARGB(255, 102, 161, 130).toARGB32(),
-    secondaryColor: Color.fromARGB(255, 159, 160, 195).toARGB32(),
+    secondaryColor: 0xFFFFFFFF,
     secondaryColorAccent: Color.fromARGB(255, 161, 130, 118).toARGB32(),
     activeColor: Colors.green.toARGB32(),
     inactiveColor: Colors.blueGrey.toARGB32(),
     warningColor: Colors.redAccent.toARGB32(),
-    backgroundColor: Color.fromARGB(255, 247, 253, 242).toARGB32(),
+    backgroundColor: 0xFFE1E9E0,
     backgroundOverlayColor: Color.fromARGB(255, 253, 243, 242).toARGB32(),
-    textColor: Color.fromARGB(255, 46, 64, 87).toARGB32(),
+    textColor: 0xFF456990,
     transparent: Colors.transparent.toARGB32(),
-    shadowColor: Colors.black45.toARGB32(),
+    shadowColor: Colors.black54.toARGB32(),
   );
 
   // Model → Entity

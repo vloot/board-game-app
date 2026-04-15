@@ -1,5 +1,6 @@
 import 'package:board_game_app/core/infrastructure/database.dart';
 import 'package:board_game_app/features/board_games/data/board_game_model.dart';
+import 'package:drift/drift.dart';
 
 class BoardGameDatasource {
   final Database database;
@@ -18,6 +19,16 @@ class BoardGameDatasource {
     await (database.delete(
       database.boardGameTable,
     )..where((tbl) => tbl.id.equals(boardGameModel.id))).go();
+
+    return boardGameModel;
+  }
+
+  Future<BoardGameModel> softDeleteBoardGame(
+    BoardGameModel boardGameModel,
+  ) async {
+    await (database.update(database.boardGameTable)
+          ..where((tbl) => tbl.id.equals(boardGameModel.id)))
+        .write(BoardGameTableCompanion(isDeleted: Value(true)));
 
     return boardGameModel;
   }

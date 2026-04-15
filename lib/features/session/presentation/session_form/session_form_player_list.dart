@@ -6,6 +6,7 @@ import 'package:board_game_app/features/session/presentation/session_form/sessio
 import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip_data.dart';
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_popup/flutter_popup.dart';
@@ -23,8 +24,11 @@ class _SessionFormPlayerListState extends State<SessionFormPlayerList> {
   final Map<String, FocusNode> _focusNodes = {};
   final Map<String, TextEditingController> _controllers = {};
 
-  TextEditingController controller(String id, int points) => _controllers
-      .putIfAbsent(id, () => TextEditingController(text: '$points'));
+  TextEditingController controller(String id, int points) =>
+      _controllers.putIfAbsent(
+        id,
+        () => TextEditingController(text: points == 0 ? '' : '$points'),
+      );
 
   FocusNode focusNode(String id) => _focusNodes.putIfAbsent(id, () {
     final node = FocusNode();
@@ -59,20 +63,17 @@ class _SessionFormPlayerListState extends State<SessionFormPlayerList> {
       bloc: sessionFormCubit,
       builder: (context, state) {
         return ReorderableListView(
-          footer: FractionallySizedBox(
-            widthFactor: 0.85,
-            child: CustomPopup(
-              content: FractionallySizedBox(
-                widthFactor: 0.72,
-                child: SessionFromPlayerSelector(
-                  players: appDataCubit.state.players,
-                  cubit: sessionFormCubit,
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [Text('Add'), Icon(Icons.add_sharp)],
-              ),
+          footer: CustomPopup(
+            content: SessionFromPlayerSelector(
+              players: appDataCubit.state.activePlayers,
+              cubit: sessionFormCubit,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(AppLocalizations.of(context)!.add),
+                Icon(Icons.add_sharp),
+              ],
             ),
           ),
           shrinkWrap: true,

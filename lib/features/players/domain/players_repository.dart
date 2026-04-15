@@ -7,11 +7,11 @@ abstract class PlayerRepository {
 
   Future<PlayerEntity> add(PlayerEntity player);
 
-  Future<List<PlayerEntity>> getAll();
+  Future<List<PlayerEntity>> getAll({bool withDeleted = false});
 
   Future<PlayerEntity> getById(int id);
 
   Future<PlayerEntity> edit(PlayerEntity player);
 
-  Future<void> delete(int id);
+  Future<void> delete(int id, {bool softDelete = true});
 }

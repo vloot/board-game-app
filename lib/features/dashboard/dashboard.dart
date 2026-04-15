@@ -3,6 +3,8 @@ import 'package:board_game_app/features/players/presentation/players_page.dart';
 import 'package:board_game_app/features/session/presentation/sessions_page.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
+import 'package:board_game_app/features/settings/presentation/settings_page.dart';
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,21 +13,50 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final settings = context.read<AppSettingsBloc>().state.settings;
     return BlocBuilder<AppSettingsBloc, AppSettingsState>(
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: Color(state.settings.theme.backgroundColor),
           appBar: AppBar(
-            title: Text('BoardGameStat'),
+            centerTitle: true,
+            title: Text(
+              "BoardGame Stats",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 26,
+                color: Color(settings.theme.secondaryColor),
+              ),
+            ),
+            flexibleSpace: SafeArea(
+              child: Container(
+                padding: EdgeInsets.only(right: 10),
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.settings,
+                    color: Color(settings.theme.secondaryColor),
+                    size: 32,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()),
+                    );
+                  },
+                ),
+              ),
+            ),
             backgroundColor: Color(state.settings.theme.primaryColor),
           ),
           body: Container(
-            color: Color(state.settings.theme.backgroundColor),
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Builder(
               builder: (context) {
                 final size = MediaQuery.of(context).size.width * 0.45;
                 return Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -33,7 +64,7 @@ class Dashboard extends StatelessWidget {
                         DashboardButton(
                           width: size,
                           height: size,
-                          text: "Board games",
+                          text: l10n.boardGames,
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -46,7 +77,7 @@ class Dashboard extends StatelessWidget {
                         DashboardButton(
                           width: size,
                           height: size,
-                          text: "Players",
+                          text: l10n.players,
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -61,7 +92,7 @@ class Dashboard extends StatelessWidget {
                     DashboardButton(
                       width: size * 2,
                       height: size / 2,
-                      text: "Sessions",
+                      text: l10n.sessions,
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -71,23 +102,23 @@ class Dashboard extends StatelessWidget {
                         );
                       },
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        DashboardButton(
-                          width: size,
-                          height: size,
-                          text: "Statistics",
-                          onPressed: () {},
-                        ),
-                        DashboardButton(
-                          width: size,
-                          height: size,
-                          text: "Pick a random game",
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     DashboardButton(
+                    //       width: size,
+                    //       height: size,
+                    //       text: l10n.stats,
+                    //       onPressed: () {},
+                    //     ),
+                    //     DashboardButton(
+                    //       width: size,
+                    //       height: size,
+                    //       text: l10n.randomGame,
+                    //       onPressed: () {},
+                    //     ),
+                    //   ],
+                    // ),
                     SizedBox(height: 30),
                   ],
                 );
@@ -116,16 +147,30 @@ class DashboardButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = context.read<AppSettingsBloc>().state.settings;
     return Container(
       padding: EdgeInsets.all(7),
       width: width,
       height: height,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+      child: Material(
+        elevation: 4,
+        shadowColor: Color(settings.theme.shadowColor),
+        borderRadius: BorderRadius.circular(12),
+        child: OutlinedButton(
+          onPressed: onPressed,
+          style: OutlinedButton.styleFrom(
+            backgroundColor: Color(settings.theme.secondaryColor),
+            side: const BorderSide(color: Colors.transparent, width: 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
         ),
-        child: Text(text),
       ),
     );
   }

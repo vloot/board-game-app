@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_uk.dart';
 
 // ignore_for_file: type=lint
 
@@ -90,9 +91,201 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('en')
+    Locale('en'),
+    Locale('uk')
   ];
 
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'LogBG'**
+  String get appName;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @pick.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick'**
+  String get pick;
+
+  /// No description provided for @boardGames.
+  ///
+  /// In en, this message translates to:
+  /// **'Board games'**
+  String get boardGames;
+
+  /// No description provided for @bgName.
+  ///
+  /// In en, this message translates to:
+  /// **'Board game'**
+  String get bgName;
+
+  /// No description provided for @players.
+  ///
+  /// In en, this message translates to:
+  /// **'Players'**
+  String get players;
+
+  /// No description provided for @sessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Plays'**
+  String get sessions;
+
+  /// No description provided for @stats.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get stats;
+
+  /// No description provided for @randomGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Random game'**
+  String get randomGame;
+
+  /// No description provided for @newBG.
+  ///
+  /// In en, this message translates to:
+  /// **'New Board Game'**
+  String get newBG;
+
+  /// No description provided for @playerCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Player count'**
+  String get playerCount;
+
+  /// No description provided for @min.
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get min;
+
+  /// No description provided for @max.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get max;
+
+  /// No description provided for @deleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete item?'**
+  String get deleteTitle;
+
+  /// No description provided for @deleteDescr.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deleteDescr;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @newPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'New Player'**
+  String get newPlayer;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @newSession.
+  ///
+  /// In en, this message translates to:
+  /// **'New play'**
+  String get newSession;
+
+  /// No description provided for @scoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Scoring'**
+  String get scoring;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @settingsCustomization.
+  ///
+  /// In en, this message translates to:
+  /// **'Customization'**
+  String get settingsCustomization;
+
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// No description provided for @settingsAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get settingsAbout;
+
+  /// No description provided for @settingsTimeFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Time format'**
+  String get settingsTimeFormat;
+
+  /// No description provided for @settingsLang.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLang;
+
+  /// No description provided for @settingsSourceCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Source code'**
+  String get settingsSourceCode;
+
+  /// No description provided for @settingsOpenRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Open repo'**
+  String get settingsOpenRepo;
+
+  /// No description provided for @settingsAppVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App version'**
+  String get settingsAppVersion;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -104,7 +297,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'uk'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -116,6 +309,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
+    case 'uk': return AppLocalizationsUk();
   }
 
   throw FlutterError(

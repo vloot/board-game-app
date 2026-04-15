@@ -17,9 +17,15 @@ class PlayerRepositoryImpl extends PlayerRepository {
   }
 
   @override
-  Future<List<PlayerEntity>> getAll() async {
+  Future<List<PlayerEntity>> getAll({bool withDeleted = false}) async {
     final result = await datasource.getAll();
-    return result.map((e) => e.toEntity()).toList();
+    if (withDeleted) {
+      return result.map((e) => e.toEntity()).toList();
+    }
+    return result
+        .where((e) => e.isDeleted == false)
+        .map((e) => e.toEntity())
+        .toList();
   }
 
   @override
@@ -37,8 +43,13 @@ class PlayerRepositoryImpl extends PlayerRepository {
   }
 
   @override
-  Future<void> delete(int id) async {
-    await datasource.delete(id);
+  Future<void> delete(int id, {bool softDelete = true}) async {
+    if (softDelete) {
+      await datasource.softDelete(id);
+    } else {
+      await datasource.delete(id);
+    }
+
     repositoryEvents.notify();
   }
 }

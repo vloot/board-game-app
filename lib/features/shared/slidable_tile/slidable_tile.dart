@@ -91,6 +91,7 @@ class _SlidableTileState<T> extends State<SlidableTile>
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
           child: SizedBox(
             height: widget.height,
+            width: double.infinity,
             child: Card(shadowColor: widget.shadowColor, child: widget.child),
           ),
         ),

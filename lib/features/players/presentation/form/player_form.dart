@@ -5,6 +5,7 @@ import 'package:board_game_app/features/settings/presentation/app_settings_bloc.
 import 'package:board_game_app/features/shared/input_with_color.dart';
 import 'package:board_game_app/features/shared/form/modal_form.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,6 +40,7 @@ class _PlayerFormState extends State<PlayerForm> {
   @override
   Widget build(BuildContext context) {
     Color? preloadedColor;
+    final l10n = AppLocalizations.of(context)!;
 
     if (widget.formAction == FormAction.edit &&
         widget.preloadedPlayerEntity != null) {
@@ -49,14 +51,14 @@ class _PlayerFormState extends State<PlayerForm> {
     return ModalForm(
       _formKey,
       formAction: widget.formAction,
-      formName: 'New Player',
+      formName: l10n.newPlayer,
       children: [
         InputWithColor(
           preloadedColor: preloadedColor,
           textController: _name,
           settingsState: context.read<AppSettingsBloc>().state,
           onColorPicked: (color) => this.color = color,
-          labelText: "Name",
+          labelText: l10n.name,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 20),
@@ -86,7 +88,7 @@ class _PlayerFormState extends State<PlayerForm> {
               }
             },
             style: ElevatedButton.styleFrom(minimumSize: Size(200, 50)),
-            child: Text('Save'),
+            child: Text(l10n.save),
           ),
         ),
       ],

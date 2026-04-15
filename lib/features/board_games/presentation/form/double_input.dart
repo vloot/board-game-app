@@ -1,3 +1,4 @@
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class DoubleInput extends StatelessWidget {
@@ -32,10 +33,11 @@ class DoubleInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Text(
-          'Player Count',
+          l10n.playerCount,
           style: TextStyle(color: isValidated ? Colors.black : Colors.red),
         ),
         Stack(
@@ -53,9 +55,9 @@ class DoubleInput extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      customFormFiled("Min", minPlayers),
+                      customFormFiled(l10n.min, minPlayers),
                       Container(width: 1, height: 40, color: Colors.grey),
-                      customFormFiled("Max", maxPlayers),
+                      customFormFiled(l10n.max, maxPlayers),
                     ],
                   ),
                 ],
@@ -77,8 +79,10 @@ class DoubleInput extends StatelessWidget {
           counterText: "",
           hintText: hintText,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          hintStyle: TextStyle(color: isValidated ? Colors.black : Colors.red),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+          hintStyle: TextStyle(
+            color: isValidated ? Colors.black45 : Colors.red,
+          ),
         ),
         maxLength: 3,
         keyboardType: TextInputType.number,

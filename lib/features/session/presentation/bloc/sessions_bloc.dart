@@ -19,14 +19,12 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
 
     on<CreateSession>((event, emit) async {
       emit(SessionFormSubmitted());
-
       try {
         sessionRepository.createSession(
           boardGameId: event.boardGameId,
           playedAt: event.playedAt,
           players: event.players,
         );
-
         emit(SessionFormSuccess());
       } catch (e) {
         emit(SessionsError(e.toString()));
@@ -35,11 +33,9 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
 
     on<DeleteSession>((event, emit) async {
       emit(SessionFormSubmitted());
-
       try {
         await sessionRepository.deleteSession(event.sessionId);
-
-        emit(SessionFormSuccess());
+        emit(SessionDeleted());
       } catch (e) {
         emit(SessionsError(e.toString()));
       }

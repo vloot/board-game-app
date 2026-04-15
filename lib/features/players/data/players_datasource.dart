@@ -1,5 +1,6 @@
 import 'package:board_game_app/core/infrastructure/database.dart';
 import 'player_model.dart';
+import 'package:drift/drift.dart';
 
 class PlayerDatasource {
   final Database database;
@@ -16,6 +17,7 @@ class PlayerDatasource {
 
   Future<List<PlayerModel>> getAll() async {
     final result = await database.select(database.playerTable).get();
+    result.where((element) => element.isDeleted == false);
     return result.map(PlayerModel.fromData).toList();
   }
 
@@ -33,6 +35,12 @@ class PlayerDatasource {
     )..where((tbl) => tbl.id.equals(model.id))).write(model.toCompanion());
 
     return model;
+  }
+
+  Future<void> softDelete(int id) async {
+    await (database.update(database.playerTable)
+          ..where((tbl) => tbl.id.equals(id)))
+        .write(PlayerTableCompanion(isDeleted: Value(true)));
   }
 
   Future<void> delete(int id) async {

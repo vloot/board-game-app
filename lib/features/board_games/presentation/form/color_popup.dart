@@ -1,3 +1,4 @@
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_popup/flutter_popup.dart';
@@ -80,7 +81,7 @@ class _ColorPopupState extends State<ColorPopup> {
                         Navigator.pop(context);
                       });
                     },
-                    child: Text('Pick'),
+                    child: Text(AppLocalizations.of(context)!.pick),
                   ),
                 ),
               ],

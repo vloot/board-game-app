@@ -91,10 +91,18 @@ class SessionLocalDataSourceImpl implements SessionDataSource {
   }
 
   @override
-  Future<void> deleteSession(int sessionId) {
-    return (db.delete(
-      db.gameSessionTable,
-    )..where((t) => t.id.equals(sessionId))).go();
+  Future<void> deleteSession(int sessionId) async {
+    await db.transaction(() async {
+      // delete session players
+      await (db.delete(
+        db.sessionPlayerTable,
+      )..where((t) => t.sessionId.equals(sessionId))).go();
+
+      // delete session
+      await (db.delete(
+        db.gameSessionTable,
+      )..where((t) => t.id.equals(sessionId))).go();
+    });
   }
 
   @override

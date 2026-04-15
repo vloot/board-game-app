@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class SettingsToggle<T> extends StatefulWidget {
+class SettingsToggle<T, V> extends StatefulWidget {
   final String settingName;
   final T initValue;
-  final Map<T, String> segmentsMap;
+  final Map<T, V> segmentsMap;
   final IconData iconData;
   final bool multiSelection;
   final bool emptySelection;
@@ -21,10 +21,10 @@ class SettingsToggle<T> extends StatefulWidget {
   });
 
   @override
-  _SettingsToggleState createState() => _SettingsToggleState<T>();
+  _SettingsToggleState createState() => _SettingsToggleState<T, V>();
 }
 
-class _SettingsToggleState<T> extends State<SettingsToggle<T>> {
+class _SettingsToggleState<T, V> extends State<SettingsToggle<T, V>> {
   late Set<T> _selection;
 
   @override
@@ -34,7 +34,7 @@ class _SettingsToggleState<T> extends State<SettingsToggle<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant SettingsToggle<T> oldWidget) {
+  void didUpdateWidget(covariant SettingsToggle<T, V> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initValue != widget.initValue) {
       setState(() {
@@ -67,18 +67,24 @@ class _SettingsToggleState<T> extends State<SettingsToggle<T>> {
   List<ButtonSegment<T>> getSegments() {
     final res = <ButtonSegment<T>>[];
     for (var key in widget.segmentsMap.keys) {
+      Widget child;
+      if (widget.segmentsMap[key] is Widget) {
+        child = widget.segmentsMap[key] as Widget;
+      } else if (widget.segmentsMap[key] is String) {
+        child = Text(
+          widget.segmentsMap[key]! as String,
+          style: TextStyle(fontSize: 14),
+        );
+      } else {
+        child = Text('invalid_type');
+      }
       res.add(
         ButtonSegment<T>(
           value: key,
           label: Container(
             width: 60,
             constraints: BoxConstraints(minHeight: double.infinity),
-            child: Center(
-              child: Text(
-                widget.segmentsMap[key]!,
-                style: TextStyle(fontSize: 14),
-              ),
-            ),
+            child: Center(child: child),
           ),
         ),
       );

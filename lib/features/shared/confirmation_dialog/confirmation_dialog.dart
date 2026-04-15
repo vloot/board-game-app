@@ -1,24 +1,27 @@
 import 'dart:io' show Platform;
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 Future<bool> showDeleteSheet(BuildContext context) async {
+  final l10n = AppLocalizations.of(context)!;
+
   if (Platform.isIOS) {
     final result = await showCupertinoModalPopup<bool>(
       context: context,
       builder: (context) => CupertinoActionSheet(
-        title: const Text('Delete item?'),
-        message: const Text('This action cannot be undone.'),
+        title: Text(l10n.deleteTitle),
+        message: Text(l10n.deleteDescr),
         actions: [
           CupertinoActionSheetAction(
             isDestructiveAction: true,
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
       ),
     );
@@ -29,16 +32,16 @@ Future<bool> showDeleteSheet(BuildContext context) async {
   final result = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Delete item?'),
-      content: const Text('This action cannot be undone.'),
+      title: Text(l10n.deleteTitle),
+      content: Text(l10n.deleteDescr),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text('Delete'),
+          child: Text(l10n.delete),
         ),
       ],
     ),

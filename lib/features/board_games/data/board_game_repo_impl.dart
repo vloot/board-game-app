@@ -18,12 +18,23 @@ class BoardGameRepoImpl extends BoardGameRepo {
   }
 
   @override
-  Future<BoardGameEntity> deleteBoardGame(BoardGameEntity boardGame) async {
-    final result = await datasource.deleteBoardGame(
-      BoardGameModel.fromEntity(boardGame),
-    );
+  Future<BoardGameEntity> deleteBoardGame(
+    BoardGameEntity boardGame, {
+    bool softDelete = true,
+  }) async {
+    final BoardGameModel boardGameModel;
+    if (softDelete) {
+      boardGameModel = await datasource.softDeleteBoardGame(
+        BoardGameModel.fromEntity(boardGame),
+      );
+    } else {
+      boardGameModel = await datasource.deleteBoardGame(
+        BoardGameModel.fromEntity(boardGame),
+      );
+    }
+
     repositoryEvents.notify();
-    return result.toEntity();
+    return boardGameModel.toEntity();
   }
 
   @override
@@ -42,8 +53,14 @@ class BoardGameRepoImpl extends BoardGameRepo {
   }
 
   @override
-  Future<List<BoardGameEntity>> getBoardGames() async {
+  Future<List<BoardGameEntity>> getBoardGames({withDeleted = false}) async {
     final result = await datasource.getBoardGames();
+    if (!withDeleted) {
+      return result
+          .where((e) => e.isDeleted == false)
+          .map((e) => e.toEntity())
+          .toList();
+    }
     return result.map((e) => e.toEntity()).toList();
   }
 }

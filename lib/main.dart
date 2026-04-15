@@ -33,6 +33,7 @@ void main() async {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+            supportedLocales: [Locale('en'), Locale('uk')],
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(

@@ -29,13 +29,22 @@ class SessionFormPlayerTile extends StatelessWidget {
       // key:
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         decoration: BoxDecoration(
-          border: BoxBorder.all(
+          color: Colors.white,
+          border: Border.all(
             color: Color(
               appDataCubit.state.playersById[sessionPlayer.playerId]!.color,
-            ),
+            ).withAlpha(128),
           ),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 1,
+              color: Color(
+                appDataCubit.state.playersById[sessionPlayer.playerId]!.color,
+              ),
+            ),
+          ],
           borderRadius: BorderRadius.circular(8),
         ),
         height: 54,
@@ -43,9 +52,26 @@ class SessionFormPlayerTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('${index + 1}'),
-            Text(appDataCubit.state.playersById[sessionPlayer.playerId]!.name),
+            SizedBox(
+              width: 80,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text('${index + 1}', textAlign: TextAlign.end),
+                  ),
+                  Text(
+                    appDataCubit
+                        .state
+                        .playersById[sessionPlayer.playerId]!
+                        .name,
+                  ),
+                ],
+              ),
+            ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 PlaceIcon(
                   isWinner: sessionPlayer.isWinner,
@@ -59,27 +85,36 @@ class SessionFormPlayerTile extends StatelessWidget {
                         );
                   },
                 ),
-                SizedBox(
-                  width: 75,
-                  child: enableScoring
-                      ? TextFormField(
+                enableScoring
+                    ? Container(
+                        width: 40,
+                        height: 35,
+                        alignment: Alignment.center,
+                        child: TextFormField(
                           focusNode: focusNode,
                           controller: controller,
                           selectAllOnFocus: true,
+                          textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,
-                          textAlignVertical: TextAlignVertical.top,
                           clipBehavior: Clip.hardEdge,
                           keyboardType: TextInputType.number,
+                          style: TextStyle(fontSize: 14),
                           decoration: InputDecoration(
-                            alignLabelWithHint: true,
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(10),
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: controller.text.isEmpty
+                                    ? Colors.black45
+                                    : Colors.transparent,
+                              ),
                             ),
+                            focusedBorder: InputBorder.none,
+                            // border: InputBorder.none,
                           ),
-                        )
-                      : Spacer(),
-                ),
+                        ),
+                      )
+                    : SizedBox(),
                 IconButton(
                   onPressed: onRemove,
                   icon: Icon(Icons.remove_circle_sharp, color: Colors.red),

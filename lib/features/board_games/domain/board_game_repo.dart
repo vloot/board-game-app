@@ -3,9 +3,12 @@ import 'package:board_game_app/features/shared/repo_events/repository_events.dar
 
 abstract class BoardGameRepo {
   final RepositoryEvents repositoryEvents = RepositoryEvents();
-  Future<List<BoardGameEntity>> getBoardGames();
+  Future<List<BoardGameEntity>> getBoardGames({withDeleted = false});
   Future<BoardGameEntity> getBoardGame(int id);
   Future<BoardGameEntity> addBoardGame(BoardGameEntity boardGame);
-  Future<BoardGameEntity> deleteBoardGame(BoardGameEntity boardGame);
+  Future<BoardGameEntity> deleteBoardGame(
+    BoardGameEntity boardGame, {
+    bool softDelete = true,
+  });
   Future<BoardGameEntity> editBoardGame(BoardGameEntity boardGame);
 }

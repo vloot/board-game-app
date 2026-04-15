@@ -6,4 +6,5 @@ class BoardGameTable extends Table {
   IntColumn get minPlayerCount => integer()();
   IntColumn get maxPlayerCount => integer()();
   IntColumn get color => integer()();
+  BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
 }

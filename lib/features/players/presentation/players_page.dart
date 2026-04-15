@@ -6,9 +6,11 @@ import 'package:board_game_app/features/players/presentation/form/player_form.da
 import 'package:board_game_app/features/players/presentation/player_tile.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/navigation_bar/custom_nav_bar.dart';
+import 'package:board_game_app/features/shared/extensions.dart';
 import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:board_game_app/features/shared/form/modal_form.dart';
 import 'package:board_game_app/features/shared/slidable/pop_action_controller.dart';
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -31,6 +33,8 @@ class _PlayersPageState extends State<PlayersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final settings = context.read<AppSettingsBloc>().state.settings;
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
@@ -38,7 +42,26 @@ class _PlayersPageState extends State<PlayersPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("Players")),
+        backgroundColor: Color(settings.theme.backgroundColor),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back_ios_sharp,
+              color: Color(settings.theme.secondaryColor),
+            ),
+          ),
+          centerTitle: true,
+          title: Text(
+            l10n.players,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 26,
+              color: Color(settings.theme.secondaryColor),
+            ),
+          ),
+          backgroundColor: Color(settings.theme.primaryColor),
+        ),
         body: Stack(
           children: [
             BlocBuilder(
@@ -55,13 +78,18 @@ class _PlayersPageState extends State<PlayersPage> {
                       hoverColor: Colors.transparent,
                     ),
                     child: SlidableAutoCloseBehavior(
-                      child: ListView(
-                        children: List.generate(state.players.length, (index) {
-                          return PlayerTile(
-                            state.players[index],
-                            popController,
-                          );
-                        }),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: ListView(
+                          children: (List.generate(state.players.length, (
+                            index,
+                          ) {
+                            return PlayerTile(
+                              state.players[index],
+                              popController,
+                            );
+                          })).withBottomSpacing(),
+                        ),
                       ),
                     ),
                   );
@@ -72,7 +100,7 @@ class _PlayersPageState extends State<PlayersPage> {
                   context.read<PlayerBloc>().add(GetPlayers());
                 }
 
-                return ListView(children: [Text('Error')]);
+                return ListView(children: [Text(l10n.error)]);
               },
             ),
             Positioned(

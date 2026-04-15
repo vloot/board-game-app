@@ -19,7 +19,7 @@ class BoardGameBloc extends Bloc<BoardGameEvent, BoardGameState> {
     Emitter<BoardGameState> emit,
   ) async {
     try {
-      final games = await repo.getBoardGames();
+      final games = await repo.getBoardGames(withDeleted: false);
       emit(BoardGameLoadAllState(boardGames: games));
     } catch (e) {
       emit(BoardGameErrorState(e.toString()));
@@ -64,7 +64,10 @@ class BoardGameBloc extends Bloc<BoardGameEvent, BoardGameState> {
     Emitter<BoardGameState> emit,
   ) async {
     try {
-      final game = await repo.deleteBoardGame(event.boardGame);
+      final game = await repo.deleteBoardGame(
+        event.boardGame,
+        softDelete: true,
+      );
       emit(BoardGameDeletedState(boardGame: game));
     } catch (e) {
       emit(BoardGameErrorState(e.toString()));

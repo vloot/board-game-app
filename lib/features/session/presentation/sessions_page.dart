@@ -5,11 +5,16 @@ import 'package:board_game_app/features/session/presentation/bloc/sessions_bloc.
 import 'package:board_game_app/features/session/presentation/bloc/sessions_event.dart';
 import 'package:board_game_app/features/session/presentation/bloc/sessions_state.dart';
 import 'package:board_game_app/features/session/presentation/session_form/session_form.dart';
+import 'package:board_game_app/features/session/presentation/session_tile.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
+import 'package:board_game_app/features/shared/extensions.dart';
 import 'package:board_game_app/features/shared/form/form_launcher.dart';
+import 'package:board_game_app/features/shared/slidable/pop_action_controller.dart';
+import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class SessionsPage extends StatefulWidget {
   const SessionsPage({super.key});
@@ -19,62 +24,113 @@ class SessionsPage extends StatefulWidget {
 }
 
 class _SessionsPageState extends State<SessionsPage> {
+  late final PopActionController popActionController;
+
+  @override
+  void initState() {
+    super.initState();
+    popActionController = PopActionController();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final settings = context.read<AppSettingsBloc>().state.settings;
+
     return BlocProvider(
       create: (_) {
         final bloc = getIt<SessionsBloc>();
         bloc.add(LoadSessions());
         return bloc;
       },
-      child: Scaffold(
-        appBar: AppBar(title: Text('Sessions')),
-        body: Builder(
-          builder: (context) {
-            return Stack(
-              children: [
-                BlocBuilder<SessionsBloc, SessionsState>(
-                  bloc: context.read<SessionsBloc>(),
-                  builder: (context, state) {
-                    if (state is SessionsLoaded) {
-                      return ListView(
-                        children: generateSessionCards(state, context),
-                      );
-                    } else if (state is SessionFormSuccess) {
-                      context.read<SessionsBloc>().add(LoadSessions());
-                    } else if (state is SessionsError) {
-                      return Text(state.message);
-                    }
-
-                    return ListView(children: [Text('123')]);
-                  },
-                ),
-                Positioned(
-                  left: 33,
-                  right: 33,
-                  bottom: 33,
-                  child: CustomNavBar(
-                    buttons: [
-                      NavigationButton(
-                        onPressed: () {
-                          openForm(
+      child: PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            popActionController.handlePop();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: Color(settings.theme.backgroundColor),
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(
+                Icons.arrow_back_ios_sharp,
+                color: Color(settings.theme.secondaryColor),
+              ),
+            ),
+            centerTitle: true,
+            title: Text(
+              l10n.sessions,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 26,
+                color: Color(settings.theme.secondaryColor),
+              ),
+            ),
+            backgroundColor: Color(settings.theme.primaryColor),
+          ),
+          body: Builder(
+            builder: (context) {
+              return Stack(
+                children: [
+                  BlocBuilder<SessionsBloc, SessionsState>(
+                    bloc: context.read<SessionsBloc>(),
+                    builder: (context, state) {
+                      switch (state) {
+                        case SessionsLoaded():
+                          final children = generateSessionCards(
+                            state,
                             context,
-                            SessionForm(
-                              sessionsBloc: context.read<SessionsBloc>(),
-                              settingsState: context
-                                  .read<AppSettingsBloc>()
-                                  .state,
-                            ),
+                          ).withBottomSpacing();
+
+                          return SlidableAutoCloseBehavior(
+                            child: ListView(children: children),
                           );
-                        },
-                        iconData: Icons.add_sharp,
-                      ),
-                    ],
+
+                        case SessionFormSuccess():
+                        case SessionDeleted():
+                          context.read<SessionsBloc>().add(LoadSessions());
+                          if (state is SessionFormSuccess) {
+                            Navigator.pop(context);
+                          }
+                          return const SizedBox.shrink();
+
+                        case SessionsError():
+                          return Text(state.message);
+
+                        default:
+                          return const SizedBox.shrink();
+                      }
+                    },
                   ),
-                ),
-              ],
-            );
-          },
+                  Positioned(
+                    left: 33,
+                    right: 33,
+                    bottom: 33,
+                    child: CustomNavBar(
+                      buttons: [
+                        NavigationButton(
+                          onPressed: () {
+                            openForm(
+                              context,
+                              SessionForm(
+                                sessionsBloc: context.read<SessionsBloc>(),
+                                settingsState: context
+                                    .read<AppSettingsBloc>()
+                                    .state,
+                              ),
+                            );
+                          },
+                          iconData: Icons.add_sharp,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -119,25 +175,11 @@ class _SessionsPageState extends State<SessionsPage> {
         );
       }
 
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  appDataState
-                      .gamesById[state.sessions[index].boardGameId]!
-                      .name,
-                ),
-                Wrap(spacing: 12, runSpacing: 12, children: playerChips),
-              ],
-            ),
-          ),
-        ),
+      return SessionTile(
+        popActionController: popActionController,
+        sessionEntity: state.sessions[index],
+        appDataState: appDataState,
+        playerChips: playerChips,
       );
     });
   }

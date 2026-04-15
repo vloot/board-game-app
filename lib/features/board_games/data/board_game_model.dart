@@ -9,6 +9,7 @@ class BoardGameModel {
   final int maxPlayer;
   final String name;
   final int color;
+  final bool isDeleted;
 
   BoardGameModel({
     required this.id,
@@ -16,6 +17,7 @@ class BoardGameModel {
     required this.maxPlayer,
     required this.name,
     required this.color,
+    this.isDeleted = false,
   });
 
   BoardGameModel copyWith({
@@ -24,6 +26,7 @@ class BoardGameModel {
     int? maxPlayer,
     String? name,
     int? color,
+    bool? isDeleted,
   }) {
     return BoardGameModel(
       id: id ?? this.id,
@@ -31,6 +34,7 @@ class BoardGameModel {
       maxPlayer: maxPlayer ?? this.maxPlayer,
       name: name ?? this.name,
       color: color ?? this.color,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -40,6 +44,7 @@ class BoardGameModel {
       name: name,
       color: color,
       playerCount: PlayerCount(min: minPlayer, max: maxPlayer),
+      isDeleted: isDeleted,
     );
   }
 
@@ -50,6 +55,7 @@ class BoardGameModel {
       color: entity.color,
       minPlayer: entity.playerCount.min,
       maxPlayer: entity.playerCount.max,
+      isDeleted: entity.isDeleted,
     );
   }
 
@@ -60,6 +66,7 @@ class BoardGameModel {
       minPlayerCount: Value(minPlayer),
       maxPlayerCount: Value(maxPlayer),
       color: Value(color),
+      isDeleted: Value(isDeleted),
     );
   }
 
@@ -70,6 +77,7 @@ class BoardGameModel {
       maxPlayer: data.maxPlayerCount,
       name: data.name,
       color: data.color,
+      isDeleted: data.isDeleted,
     );
   }
 }

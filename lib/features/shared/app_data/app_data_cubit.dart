@@ -5,36 +5,44 @@ import 'package:board_game_app/features/players/domain/players_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppDataState {
-  final List<PlayerEntity> players;
+  final List<PlayerEntity> allPlayers;
+  final List<PlayerEntity> activePlayers;
   final Map<int, PlayerEntity> playersById;
 
-  final List<BoardGameEntity> games;
+  final List<BoardGameEntity> allGames;
+  final List<BoardGameEntity> activeGames;
   final Map<int, BoardGameEntity> gamesById;
 
   final bool isLoading;
   final bool isLoaded;
 
   const AppDataState({
-    this.players = const [],
+    this.allPlayers = const [],
+    this.activePlayers = const [],
     this.playersById = const {},
-    this.games = const [],
+    this.allGames = const [],
+    this.activeGames = const [],
     this.gamesById = const {},
     this.isLoading = false,
     this.isLoaded = false,
   });
 
   AppDataState copyWith({
-    List<PlayerEntity>? players,
+    List<PlayerEntity>? allPlayers,
+    List<PlayerEntity>? activePlayers,
     Map<int, PlayerEntity>? playersById,
-    List<BoardGameEntity>? games,
+    List<BoardGameEntity>? allGames,
+    List<BoardGameEntity>? activeGames,
     Map<int, BoardGameEntity>? gamesById,
     bool? isLoading,
     bool? isLoaded,
   }) {
     return AppDataState(
-      players: players ?? this.players,
+      allPlayers: allPlayers ?? this.allPlayers,
+      activePlayers: activePlayers ?? this.activePlayers,
       playersById: playersById ?? this.playersById,
-      games: games ?? this.games,
+      allGames: allGames ?? this.allGames,
+      activeGames: activeGames ?? this.activeGames,
       gamesById: gamesById ?? this.gamesById,
       isLoading: isLoading ?? this.isLoading,
       isLoaded: isLoaded ?? this.isLoaded,
@@ -64,8 +72,8 @@ class AppDataCubit extends Cubit<AppDataState> {
 
     try {
       final results = await Future.wait([
-        playerRepo.getAll(),
-        gameRepo.getBoardGames(),
+        playerRepo.getAll(withDeleted: true),
+        gameRepo.getBoardGames(withDeleted: true),
       ]);
 
       final players = results[0] as List<PlayerEntity>;
@@ -73,9 +81,11 @@ class AppDataCubit extends Cubit<AppDataState> {
 
       emit(
         state.copyWith(
-          players: players,
+          allPlayers: players,
+          activePlayers: players.where((p) => !p.isDeleted).toList(),
           playersById: {for (final p in players) p.id: p},
-          games: games,
+          allGames: games,
+          activeGames: games.where((g) => !g.isDeleted).toList(),
           gamesById: {for (final g in games) g.id: g},
           isLoading: false,
           isLoaded: true,
