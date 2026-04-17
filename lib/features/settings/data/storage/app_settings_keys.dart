@@ -3,5 +3,4 @@ class AppSettingsKeys {
   static const themeType = 'themeType';
   static const themeSettings = 'themeSettings';
   static const locale = 'locale';
-  static const timeFormat = 'timeFormat';
 }

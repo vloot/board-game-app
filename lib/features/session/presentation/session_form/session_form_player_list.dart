@@ -117,31 +117,37 @@ class SessionFromPlayerSelector extends StatelessWidget {
     return BlocBuilder(
       bloc: cubit,
       builder: (context, state) {
-        return Wrap(
-          verticalDirection: VerticalDirection.up,
-          alignment: WrapAlignment.start,
-          spacing: 7,
-          runSpacing: 7,
-          children: List.generate(
-            players.length,
-            (index) => DropdownChip(
-              chipData: DropdownChipData<PlayerEntity>(
-                label: players[index].name,
-                color: Color(players[index].color),
-                chipValue: players[index],
+        return FractionallySizedBox(
+          widthFactor: 0.7,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+            child: Wrap(
+              verticalDirection: VerticalDirection.up,
+              alignment: WrapAlignment.start,
+              spacing: 7,
+              runSpacing: 7,
+              children: List.generate(
+                players.length,
+                (index) => DropdownChip(
+                  chipData: DropdownChipData<PlayerEntity>(
+                    label: players[index].name,
+                    color: Color(players[index].color),
+                    chipValue: players[index],
+                  ),
+                  selected: cubit.containsSessionPlayer(players[index]),
+                  onSelected: (value) {
+                    if (value) {
+                      // add
+                      cubit.addSessionPlayer(
+                        SessionPlayerEntity(playerId: players[index].id),
+                      );
+                    } else {
+                      // remove
+                      cubit.removeSessionPlayer(players[index].id);
+                    }
+                  },
+                ),
               ),
-              selected: cubit.containsSessionPlayer(players[index]),
-              onSelected: (value) {
-                if (value) {
-                  // add
-                  cubit.addSessionPlayer(
-                    SessionPlayerEntity(playerId: players[index].id),
-                  );
-                } else {
-                  // remove
-                  cubit.removeSessionPlayer(players[index].id);
-                }
-              },
             ),
           ),
         );

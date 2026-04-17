@@ -10,6 +10,10 @@ class SessionsLoaded extends SessionsState {
   SessionsLoaded(this.sessions);
 }
 
+class SessionDeleted extends SessionsState {}
+
+class SessionEdited extends SessionsState {}
+
 class SessionFormLoading extends SessionsState {}
 
 class SessionFormSubmitted extends SessionsState {}

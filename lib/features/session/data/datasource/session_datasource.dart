@@ -15,15 +15,12 @@ abstract class SessionDataSource {
 
   Future<List<SessionModel>> getSessions();
 
+  Future<SessionModel?> getSession(int id);
+
   Future<void> deleteSession(int sessionId);
 
-  Future<int> removePlayersFromSession({
-    required int sessionId,
-    required List<int> playerIds,
-  });
-
-  Future<int> removePlayerFromSession({
-    required int sessionId,
-    required int playerId,
+  Future<void> updateSession({
+    required SessionModel sessionModel,
+    required List<SessionPlayerModel> sessionPlayers,
   });
 }

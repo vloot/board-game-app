@@ -257,12 +257,6 @@ abstract class AppLocalizations {
   /// **'About'**
   String get settingsAbout;
 
-  /// No description provided for @settingsTimeFormat.
-  ///
-  /// In en, this message translates to:
-  /// **'Time format'**
-  String get settingsTimeFormat;
-
   /// No description provided for @settingsLang.
   ///
   /// In en, this message translates to:

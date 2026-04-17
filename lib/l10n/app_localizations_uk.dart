@@ -90,9 +90,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsAbout => 'Про додаток';
 
   @override
-  String get settingsTimeFormat => 'Формат часу';
-
-  @override
   String get settingsLang => 'Мова';
 
   @override

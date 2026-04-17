@@ -4,13 +4,13 @@ import 'package:board_game_app/features/session/domain/session_entity.dart';
 class SessionModel {
   final int? id;
   final int boardGameId;
-  final DateTime date;
+  final DateTime playedAt;
   final List<SessionPlayerModel> players;
 
   SessionModel({
     this.id,
     required this.boardGameId,
-    required this.date,
+    required this.playedAt,
     required this.players,
   });
 
@@ -18,7 +18,7 @@ class SessionModel {
     return SessionEntity(
       id: id,
       boardGameId: boardGameId,
-      date: date,
+      playedAt: playedAt,
       players: players.map((p) => p.toEntity()).toList(),
     );
   }
@@ -27,7 +27,7 @@ class SessionModel {
     return SessionModel(
       id: entity.id,
       boardGameId: entity.boardGameId,
-      date: entity.date,
+      playedAt: entity.playedAt,
       players: entity.players
           .map((p) => SessionPlayerModel.fromEntity(p))
           .toList(),
@@ -43,7 +43,7 @@ class SessionModel {
     return SessionModel(
       id: id ?? this.id,
       boardGameId: boardGameId ?? this.boardGameId,
-      date: date ?? this.date,
+      playedAt: date ?? this.playedAt,
       players: players ?? this.players,
     );
   }

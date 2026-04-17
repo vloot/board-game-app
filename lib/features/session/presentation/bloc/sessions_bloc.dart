@@ -40,5 +40,15 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
         emit(SessionsError(e.toString()));
       }
     });
+
+    on<EditSession>((event, emit) async {
+      emit(SessionFormSubmitted());
+      try {
+        await sessionRepository.updateSession(event.sessionEntity);
+        emit(SessionEdited());
+      } catch (e) {
+        emit(SessionsError(e.toString()));
+      }
+    });
   }
 }

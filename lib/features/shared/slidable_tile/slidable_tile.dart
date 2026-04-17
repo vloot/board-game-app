@@ -1,6 +1,8 @@
+import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/slidable/circular_slidable_action.dart';
 import 'package:board_game_app/features/shared/slidable/pop_action_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class SlidableTile extends StatefulWidget {
@@ -55,6 +57,7 @@ class _SlidableTileState<T> extends State<SlidableTile>
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.read<AppSettingsBloc>().state.settings.theme;
     return SizedBox(
       height: widget.height,
       child: Slidable(
@@ -65,7 +68,7 @@ class _SlidableTileState<T> extends State<SlidableTile>
           motion: const DrawerMotion(),
           children: [
             CircularSlidableAction(
-              bgColor: Colors.blueAccent,
+              bgColor: Color(theme.primaryColorAccent),
               iconColor: Colors.white,
               iconData: Icons.edit_sharp,
               onPressed: () {
@@ -75,7 +78,7 @@ class _SlidableTileState<T> extends State<SlidableTile>
               vPadding: widget.vPadding,
             ),
             CircularSlidableAction(
-              bgColor: Colors.red,
+              bgColor: Color(theme.warningColor),
               iconColor: Colors.white,
               iconData: Icons.delete_forever_sharp,
               onPressed: () {

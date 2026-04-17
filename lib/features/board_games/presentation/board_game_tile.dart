@@ -21,6 +21,7 @@ class BoardGameTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settingsState = context.read<AppSettingsBloc>().state;
     return SlidableTile(
       popActionController: popActionController,
       vPadding: 20,
@@ -29,10 +30,7 @@ class BoardGameTile extends StatelessWidget {
       onEdit: () {
         openForm(
           context,
-          BoardGameForm(
-            settingsState: context.read<AppSettingsBloc>().state,
-            boardGame: entity,
-          ),
+          BoardGameForm(settingsState: settingsState, boardGame: entity),
         );
       },
       onDelete: () {
@@ -65,23 +63,34 @@ class BoardGameTile extends StatelessWidget {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    Text(entity.name, style: const TextStyle(fontSize: 16)),
+                    Text(
+                      entity.name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(settingsState.settings.theme.textColor),
+                      ),
+                    ),
                     Positioned(
                       bottom: -18,
                       left: -42,
                       child: Row(
                         children: entity.playerCount.isFilled()
                             ? [
-                                const Icon(
+                                Icon(
                                   Icons.person_2_sharp,
                                   size: 10,
-                                  color: Colors.black87,
+                                  color: Color(
+                                    settingsState.settings.theme.textColor,
+                                  ).withAlpha(240),
                                 ),
                                 Text(
                                   '${entity.playerCount}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.black87,
+                                    color: Color(
+                                      settingsState.settings.theme.textColor,
+                                    ).withAlpha(240),
                                   ),
                                 ),
                               ]

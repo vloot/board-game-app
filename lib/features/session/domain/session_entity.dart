@@ -3,13 +3,13 @@ import 'package:board_game_app/features/session/domain/session_player_entity.dar
 class SessionEntity {
   final int? id;
   final int boardGameId;
-  final DateTime date;
+  final DateTime playedAt;
   final List<SessionPlayerEntity> players;
 
   SessionEntity({
     this.id,
     required this.boardGameId,
-    required this.date,
+    required this.playedAt,
     required this.players,
   });
 }

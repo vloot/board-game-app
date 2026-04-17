@@ -7,10 +7,11 @@ import 'package:board_game_app/features/settings/presentation/widgets/settings_s
 import 'package:board_game_app/features/settings/presentation/widgets/settings_toggle.dart';
 import 'package:board_game_app/features/shared/app_info/app_info.dart';
 import 'package:board_game_app/features/shared/app_info/app_info_service.dart';
-import 'package:board_game_app/features/shared/time_format.dart';
 import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -59,11 +60,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       sectionTitle: l10n.settingsCustomization,
                       settingsState: settingsState,
                       settingsEntries: [
-                        SettingsToggle<AppBrightness, Icon>(
+                        SettingsToggle<AppBrightness, Widget>(
                           initValue: settingsState.settings.appBrightness,
                           segmentsMap: {
-                            AppBrightness.dark: Icon(Icons.dark_mode_sharp),
-                            AppBrightness.light: Icon(Icons.light_mode_sharp),
+                            AppBrightness.dark: IconToggle(
+                              color: Colors.blueGrey,
+                              iconData: Icons.dark_mode_sharp,
+                            ),
+                            AppBrightness.light: IconToggle(
+                              color: Colors.limeAccent,
+                              iconData: Icons.light_mode_sharp,
+                            ),
                           },
                           iconData: Icons.palette_sharp,
                           settingName: l10n.settingsTheme,
@@ -84,37 +91,44 @@ class _SettingsPageState extends State<SettingsPage> {
                             );
                           },
                         ),
-                        SettingsToggle<TimeFormat, String>(
-                          settingName: l10n.settingsTimeFormat,
-                          segmentsMap: {
-                            TimeFormat.h24: "24",
-                            TimeFormat.h12: "12",
-                          },
-                          iconData: Icons.av_timer_sharp,
-                          onSelectionChanged: (selected) {
-                            context.read<AppSettingsBloc>().add(
-                              UpdateAppSettings(
-                                settingsState.settings.copyWith(
-                                  timeFormat: selected,
-                                ),
-                              ),
-                            );
-                          },
-                          initValue: settingsState.settings.timeFormat,
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.translate_sharp),
-                          title: Text(l10n.settingsLang),
-                          trailing: DropdownButton(
+                        SettingsCustomLine(
+                          settingsState: settingsState,
+                          settingName: l10n.settingsLang,
+                          iconData: Icons.translate_sharp,
+                          content: DropdownButton(
                             value: settingsState.settings.locale,
                             items: [
                               DropdownMenuItem(
                                 value: Locale('en'),
-                                child: Text('English'),
+                                child: Text(
+                                  'English',
+                                  style: TextStyle(
+                                    color: Color(
+                                      context
+                                          .read<AppSettingsBloc>()
+                                          .state
+                                          .settings
+                                          .theme
+                                          .textColor,
+                                    ),
+                                  ),
+                                ),
                               ),
                               DropdownMenuItem(
                                 value: Locale('uk'),
-                                child: Text('Українська'),
+                                child: Text(
+                                  'Українська',
+                                  style: TextStyle(
+                                    color: Color(
+                                      context
+                                          .read<AppSettingsBloc>()
+                                          .state
+                                          .settings
+                                          .theme
+                                          .textColor,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                             onChanged: (value) {
@@ -132,33 +146,46 @@ class _SettingsPageState extends State<SettingsPage> {
                       sectionTitle: l10n.settingsAbout,
                       settingsState: settingsState,
                       settingsEntries: [
-                        ListTile(
-                          leading: Icon(Icons.code),
-                          title: Text(l10n.settingsSourceCode),
-                          trailing: ElevatedButton(
+                        SettingsCustomLine(
+                          iconData: Icons.code_sharp,
+                          settingName: l10n.settingsSourceCode,
+                          content: ElevatedButton(
                             onPressed: () async {
                               try {
-                                // await launchUrl(Uri.parse(repoLink));
+                                final repo = dotenv.get(
+                                  "REPO_URL",
+                                  fallback: "",
+                                );
+                                await launchUrl(Uri.parse(repo));
                               } catch (e) {
-                                // TODO handdle error
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(l10n.error)),
+                                );
                               }
                             },
                             child: Text(l10n.settingsOpenRepo),
                           ),
+                          settingsState: settingsState,
                         ),
-                        ListTile(
-                          leading: Icon(Icons.numbers_sharp),
-                          title: Text(l10n.settingsAppVersion),
-                          trailing: FutureBuilder<AppInfo>(
+                        SettingsCustomLine(
+                          iconData: Icons.numbers_sharp,
+                          settingName: l10n.settingsAppVersion,
+                          content: FutureBuilder<AppInfo>(
                             future: appInfoService.load(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) return SizedBox.shrink();
                               return Text(
                                 snapshot.data!.version,
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(
+                                    settingsState.settings.theme.textColor,
+                                  ),
+                                ),
                               );
                             },
                           ),
+                          settingsState: settingsState,
                         ),
                       ],
                     ),
@@ -169,6 +196,62 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         );
       },
+    );
+  }
+}
+
+class SettingsCustomLine extends StatelessWidget {
+  const SettingsCustomLine({
+    super.key,
+    required this.iconData,
+    required this.settingName,
+    required this.content,
+    required this.settingsState,
+  });
+
+  final IconData iconData;
+  final String settingName;
+  final Widget content;
+  final AppSettingsState settingsState;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(
+        iconData,
+        color: Color(
+          context.read<AppSettingsBloc>().state.settings.theme.textColor,
+        ),
+      ),
+      title: Text(
+        settingName,
+        style: TextStyle(
+          color: Color(
+            context.read<AppSettingsBloc>().state.settings.theme.textColor,
+          ),
+        ),
+      ),
+      trailing: content,
+    );
+  }
+}
+
+class IconToggle extends StatelessWidget {
+  final Color color;
+  final IconData iconData;
+
+  const IconToggle({super.key, required this.color, required this.iconData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      iconData,
+      color: color,
+      size: 22,
+      fontWeight: FontWeight.bold,
+      shadows: [
+        Shadow(blurRadius: 30, color: Colors.black26, offset: Offset(1, 1)),
+      ],
     );
   }
 }

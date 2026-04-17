@@ -90,9 +90,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAbout => 'About';
 
   @override
-  String get settingsTimeFormat => 'Time format';
-
-  @override
   String get settingsLang => 'Language';
 
   @override

@@ -93,6 +93,8 @@ class SessionFormPlayerTile extends StatelessWidget {
                         child: TextFormField(
                           focusNode: focusNode,
                           controller: controller,
+                          onChanged: (value) =>
+                              sessionPlayer.score = int.tryParse(value) ?? 0,
                           selectAllOnFocus: true,
                           textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,

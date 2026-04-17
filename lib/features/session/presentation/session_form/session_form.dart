@@ -1,4 +1,5 @@
 import 'package:board_game_app/features/board_games/domain/board_game_entity.dart';
+import 'package:board_game_app/features/session/domain/session_entity.dart';
 import 'package:board_game_app/features/session/presentation/bloc/sessions_bloc.dart';
 import 'package:board_game_app/features/session/presentation/bloc/sessions_event.dart';
 import 'package:board_game_app/features/session/presentation/session_form/cubit/session_form_cubit.dart';
@@ -17,10 +18,12 @@ import 'package:intl/intl.dart';
 class SessionForm extends StatefulWidget {
   final AppSettingsState settingsState;
   final SessionsBloc sessionsBloc;
+  final SessionEntity? sessionEntity;
   const SessionForm({
     super.key,
     required this.settingsState,
     required this.sessionsBloc,
+    this.sessionEntity,
   });
 
   @override
@@ -43,6 +46,14 @@ class _SessionFormState extends State<SessionForm> {
       ],
       child: Builder(
         builder: (context) {
+          if (widget.sessionEntity != null) {
+            sessionDate = widget.sessionEntity!.playedAt;
+            final cubit = context.read<SessionFormCubit>();
+            for (var p in widget.sessionEntity!.players) {
+              cubit.addSessionPlayer(p);
+              print(p.score);
+            }
+          }
           return ModalForm(
             _formKey,
             formName: l10n.newSession,
@@ -105,6 +116,10 @@ class _SessionFormState extends State<SessionForm> {
                               color: Color(item.color),
                               chipValue: item,
                             ),
+                        defaultValue: context
+                            .read<AppDataCubit>()
+                            .state
+                            .gamesById[widget.sessionEntity?.boardGameId],
                       ),
                     ),
                   ),
@@ -118,16 +133,16 @@ class _SessionFormState extends State<SessionForm> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(l10n.scoring),
-                        SizedBox(width: 20),
-                        Switch(
-                          value: enableScoring,
-                          onChanged: (value) {
-                            setState(() {
-                              enableScoring = value;
-                            });
-                          },
-                        ),
+                        // Text(l10n.scoring),
+                        // SizedBox(width: 20),
+                        // Switch(
+                        //   value: enableScoring,
+                        //   onChanged: (value) {
+                        //     setState(() {
+                        //       enableScoring = value;
+                        //     });
+                        //   },
+                        // ),
                       ],
                     ),
                   ),
@@ -145,21 +160,37 @@ class _SessionFormState extends State<SessionForm> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    widget.sessionsBloc.add(
-                      CreateSession(
-                        boardGameId: context
-                            .read<DropdownChipCubit<BoardGameEntity>>()
-                            .state
-                            .selected
-                            .first
-                            .id,
-                        playedAt: sessionDate,
-                        players: context
-                            .read<SessionFormCubit>()
-                            .state
-                            .sessionPlayers,
-                      ),
-                    );
+                    final bgId = context
+                        .read<DropdownChipCubit<BoardGameEntity>>()
+                        .state
+                        .selected
+                        .first
+                        .id;
+                    final players = context
+                        .read<SessionFormCubit>()
+                        .state
+                        .sessionPlayers;
+
+                    if (widget.sessionEntity != null) {
+                      widget.sessionsBloc.add(
+                        EditSession(
+                          SessionEntity(
+                            id: widget.sessionEntity!.id,
+                            boardGameId: bgId,
+                            playedAt: sessionDate,
+                            players: players,
+                          ),
+                        ),
+                      );
+                    } else {
+                      widget.sessionsBloc.add(
+                        CreateSession(
+                          boardGameId: bgId,
+                          playedAt: sessionDate,
+                          players: players,
+                        ),
+                      );
+                    }
                   }
                 },
                 child: Text(l10n.save),

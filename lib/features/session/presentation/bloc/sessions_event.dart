@@ -1,3 +1,4 @@
+import 'package:board_game_app/features/session/domain/session_entity.dart';
 import 'package:board_game_app/features/session/domain/session_player_entity.dart';
 
 abstract class SessionsEvent {}
@@ -14,6 +15,12 @@ class CreateSession extends SessionsEvent {
     required this.playedAt,
     required this.players,
   });
+}
+
+class EditSession extends SessionsEvent {
+  final SessionEntity sessionEntity;
+
+  EditSession(this.sessionEntity);
 }
 
 class DeleteSession extends SessionsEvent {

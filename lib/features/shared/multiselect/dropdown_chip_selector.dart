@@ -13,18 +13,23 @@ class DropdownChipSelector<T> extends StatelessWidget {
   final DropdownChipData<T> Function(T item) getChipData;
   final bool allowMultiple;
   final DropdownChipCubit<T> cubit;
+  final T? defaultValue;
 
   const DropdownChipSelector({
     super.key,
     required this.palceholder,
     required this.items,
     required this.getChipData,
-    this.allowMultiple = true,
     required this.cubit,
+    this.allowMultiple = true,
+    this.defaultValue,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (defaultValue != null) {
+      cubit.toggle(defaultValue as T);
+    }
     return BlocProvider<DropdownChipCubit<T>>(
       create: (_) => cubit,
       child: Padding(

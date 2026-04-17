@@ -1,8 +1,11 @@
 import 'package:board_game_app/features/session/domain/session_entity.dart';
 import 'package:board_game_app/features/session/presentation/bloc/sessions_bloc.dart';
 import 'package:board_game_app/features/session/presentation/bloc/sessions_event.dart';
+import 'package:board_game_app/features/session/presentation/session_form/session_form.dart';
+import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
 import 'package:board_game_app/features/shared/confirmation_dialog/confirmation_dialog.dart';
+import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:board_game_app/features/shared/slidable/pop_action_controller.dart';
 import 'package:board_game_app/features/shared/slidable_tile/slidable_tile.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +33,18 @@ class SessionTile extends StatelessWidget {
         height: 100,
         vPadding: 26.5,
         popActionController: popActionController,
-        onEdit: () {},
+        onEdit: () {
+          final bloc = context.read<SessionsBloc>();
+          // bloc.add(EditSession(sessionEntity));
+          openForm(
+            context,
+            SessionForm(
+              settingsState: context.read<AppSettingsBloc>().state,
+              sessionsBloc: bloc,
+              sessionEntity: sessionEntity,
+            ),
+          );
+        },
         onDelete: () {
           final bloc = context.read<SessionsBloc>();
           showDeleteSheet(context).then((value) {
@@ -45,7 +59,19 @@ class SessionTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(appDataState.gamesById[sessionEntity.boardGameId]!.name),
+              Text(
+                appDataState.gamesById[sessionEntity.boardGameId]!.name,
+                style: TextStyle(
+                  color: Color(
+                    context
+                        .read<AppSettingsBloc>()
+                        .state
+                        .settings
+                        .theme
+                        .textColor,
+                  ),
+                ),
+              ),
               Wrap(spacing: 12, runSpacing: 12, children: playerChips),
             ],
           ),

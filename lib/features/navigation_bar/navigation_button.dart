@@ -14,10 +14,12 @@ class NavigationButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        fixedSize: Size(90, 64),
+        fixedSize: const Size(64, 64),
         iconSize: 42,
         backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
+        shape: const CircleBorder(),
+        padding: EdgeInsets.zero,
       ),
       child: Icon(iconData),
     );

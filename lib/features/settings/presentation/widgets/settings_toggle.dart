@@ -1,4 +1,6 @@
+import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsToggle<T, V> extends StatefulWidget {
   final String settingName;
@@ -46,8 +48,20 @@ class _SettingsToggleState<T, V> extends State<SettingsToggle<T, V>> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(widget.iconData),
-      title: Text(widget.settingName),
+      leading: Icon(
+        widget.iconData,
+        color: Color(
+          context.read<AppSettingsBloc>().state.settings.theme.textColor,
+        ),
+      ),
+      title: Text(
+        widget.settingName,
+        style: TextStyle(
+          color: Color(
+            context.read<AppSettingsBloc>().state.settings.theme.textColor,
+          ),
+        ),
+      ),
       trailing: SegmentedButton<T>(
         multiSelectionEnabled: widget.multiSelection,
         emptySelectionAllowed: widget.emptySelection,

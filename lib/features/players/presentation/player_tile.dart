@@ -25,7 +25,14 @@ class PlayerTile extends StatelessWidget {
       vPadding: 11,
       child: ListTile(
         leading: Icon(Icons.circle_sharp, color: Color(playerEntity.color)),
-        title: Text(playerEntity.name),
+        title: Text(
+          playerEntity.name,
+          style: TextStyle(
+            color: Color(
+              context.read<AppSettingsBloc>().state.settings.theme.textColor,
+            ),
+          ),
+        ),
       ),
       onEdit: () {
         openForm(

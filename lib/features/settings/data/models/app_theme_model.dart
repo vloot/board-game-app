@@ -55,7 +55,7 @@ class AppThemeModel {
     warningColor: Colors.redAccent.toARGB32(),
     backgroundColor: 0xFFE1E9E0,
     backgroundOverlayColor: Color.fromARGB(255, 253, 243, 242).toARGB32(),
-    textColor: 0xFF456990,
+    textColor: 0xFF182430,
     transparent: Colors.transparent.toARGB32(),
     shadowColor: Colors.black54.toARGB32(),
   );

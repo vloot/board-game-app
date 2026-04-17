@@ -95,29 +95,20 @@ class _BoardGamesPageState extends State<BoardGamesPage> {
                 return SizedBox(height: 10, child: Text(l10n.error));
               },
             ),
-            Positioned(
-              bottom: 33,
-              right: 30,
-              left: 30,
-              child: CustomNavBar(
-                buttons: [
-                  NavigationButton(
-                    onPressed: () {},
-                    iconData: Icons.casino_sharp,
-                  ),
-                  NavigationButton(
-                    onPressed: () {
-                      openForm(
-                        context,
-                        BoardGameForm(
-                          settingsState: context.read<AppSettingsBloc>().state,
-                        ),
-                      );
-                    },
-                    iconData: Icons.add_sharp,
-                  ),
-                ],
-              ),
+            CustomNavBar(
+              buttons: [
+                NavigationButton(
+                  onPressed: () {
+                    openForm(
+                      context,
+                      BoardGameForm(
+                        settingsState: context.read<AppSettingsBloc>().state,
+                      ),
+                    );
+                  },
+                  iconData: Icons.add_sharp,
+                ),
+              ],
             ),
           ],
         ),

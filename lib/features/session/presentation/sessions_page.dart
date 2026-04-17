@@ -104,28 +104,23 @@ class _SessionsPageState extends State<SessionsPage> {
                       }
                     },
                   ),
-                  Positioned(
-                    left: 33,
-                    right: 33,
-                    bottom: 33,
-                    child: CustomNavBar(
-                      buttons: [
-                        NavigationButton(
-                          onPressed: () {
-                            openForm(
-                              context,
-                              SessionForm(
-                                sessionsBloc: context.read<SessionsBloc>(),
-                                settingsState: context
-                                    .read<AppSettingsBloc>()
-                                    .state,
-                              ),
-                            );
-                          },
-                          iconData: Icons.add_sharp,
-                        ),
-                      ],
-                    ),
+                  CustomNavBar(
+                    buttons: [
+                      NavigationButton(
+                        onPressed: () {
+                          openForm(
+                            context,
+                            SessionForm(
+                              sessionsBloc: context.read<SessionsBloc>(),
+                              settingsState: context
+                                  .read<AppSettingsBloc>()
+                                  .state,
+                            ),
+                          );
+                        },
+                        iconData: Icons.add_sharp,
+                      ),
+                    ],
                   ),
                 ],
               );

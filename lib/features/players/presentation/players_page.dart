@@ -103,32 +103,22 @@ class _PlayersPageState extends State<PlayersPage> {
                 return ListView(children: [Text(l10n.error)]);
               },
             ),
-            Positioned(
-              bottom: 33,
-              right: 30,
-              left: 30,
-              child: SizedBox(
-                width: 50,
-                child: CustomNavBar(
-                  buttons: [
-                    NavigationButton(
-                      onPressed: () {
-                        openForm(
-                          context,
-                          PlayerForm(
-                            formAction: FormAction.add,
-                            settingsState: context
-                                .read<AppSettingsBloc>()
-                                .state,
-                            preloadedPlayerEntity: null,
-                          ),
-                        );
-                      },
-                      iconData: Icons.add_sharp,
-                    ),
-                  ],
+            CustomNavBar(
+              buttons: [
+                NavigationButton(
+                  onPressed: () {
+                    openForm(
+                      context,
+                      PlayerForm(
+                        formAction: FormAction.add,
+                        settingsState: context.read<AppSettingsBloc>().state,
+                        preloadedPlayerEntity: null,
+                      ),
+                    );
+                  },
+                  iconData: Icons.add_sharp,
                 ),
-              ),
+              ],
             ),
           ],
         ),

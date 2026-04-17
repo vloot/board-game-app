@@ -1,6 +1,7 @@
 import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:board_game_app/core/infrastructure/dependency_injection.dart';
 import 'package:board_game_app/features/board_games/presentation/bloc/board_game_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:board_game_app/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  dotenv.load(fileName: "./.env");
   await setupDI();
 
   runApp(
