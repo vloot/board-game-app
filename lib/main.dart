@@ -28,6 +28,7 @@ void main() async {
       child: BlocBuilder<AppSettingsBloc, AppSettingsState>(
         builder: (context, state) {
           return MaterialApp(
+            title: "BG-Stats",
             locale: state.settings.locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,

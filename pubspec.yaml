@@ -1,7 +1,7 @@
 name: board_game_app
-description: "Board game app"
+description: "Board stats game app"
 publish_to: "none"
-version: 0.1.0
+version: 0.1.1
 
 environment:
   sdk: ^3.9.0
@@ -24,6 +24,7 @@ dependencies:
   flutter_slidable: ^4.0.3
   flutter_dotenv: ^6.0.0
   url_launcher: ^6.3.2
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
