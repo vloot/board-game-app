@@ -6,6 +6,7 @@ import 'package:board_game_app/features/players/presentation/form/player_form.da
 import 'package:board_game_app/features/players/presentation/player_tile.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/navigation_bar/custom_nav_bar.dart';
+import 'package:board_game_app/features/shared/custom_app_bar.dart';
 import 'package:board_game_app/features/shared/extensions.dart';
 import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:board_game_app/features/shared/form/modal_form.dart';
@@ -43,32 +44,14 @@ class _PlayersPageState extends State<PlayersPage> {
       },
       child: Scaffold(
         backgroundColor: Color(settings.theme.backgroundColor),
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(
-              Icons.arrow_back_ios_sharp,
-              color: Color(settings.theme.secondaryColor),
-            ),
-          ),
-          centerTitle: true,
-          title: Text(
-            l10n.players,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 26,
-              color: Color(settings.theme.secondaryColor),
-            ),
-          ),
-          backgroundColor: Color(settings.theme.primaryColor),
-        ),
+        appBar: CustomAppBar(settings: settings, title: l10n.players),
         body: Stack(
           children: [
             BlocBuilder(
               bloc: context.read<PlayerBloc>(),
               builder: (context, state) {
                 if (state is PlayerLoading) {
-                  // idk
+                  // TODO loading indicator?
                 } else if (state is PlayersLoaded) {
                   return Theme(
                     data: Theme.of(context).copyWith(

@@ -37,13 +37,13 @@ class SessionModel {
   SessionModel copyWith({
     int? id,
     int? boardGameId,
-    DateTime? date,
+    DateTime? playedAt,
     List<SessionPlayerModel>? players,
   }) {
     return SessionModel(
       id: id ?? this.id,
       boardGameId: boardGameId ?? this.boardGameId,
-      playedAt: date ?? this.playedAt,
+      playedAt: playedAt ?? this.playedAt,
       players: players ?? this.players,
     );
   }

@@ -5,3 +5,9 @@ extension WidgetListExtensions on List<Widget> {
     return [...this, SizedBox(height: height)];
   }
 }
+
+extension ReadableTextColor on Color {
+  Color get overlayColor {
+    return computeLuminance() < 0.4 ? Colors.white : Colors.black;
+  }
+}

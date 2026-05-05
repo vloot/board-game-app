@@ -4,6 +4,7 @@ import 'package:board_game_app/features/session/presentation/sessions_page.dart'
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_state.dart';
 import 'package:board_game_app/features/settings/presentation/settings_page.dart';
+import 'package:board_game_app/features/stats/presentation/stats_page.dart';
 import 'package:board_game_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // FIXME why is this here if there's a blocBuilder below?
     final settings = context.read<AppSettingsBloc>().state.settings;
     return BlocBuilder<AppSettingsBloc, AppSettingsState>(
       builder: (context, state) {
@@ -102,23 +104,30 @@ class Dashboard extends StatelessWidget {
                         );
                       },
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     DashboardButton(
-                    //       width: size,
-                    //       height: size,
-                    //       text: l10n.stats,
-                    //       onPressed: () {},
-                    //     ),
-                    //     DashboardButton(
-                    //       width: size,
-                    //       height: size,
-                    //       text: l10n.randomGame,
-                    //       onPressed: () {},
-                    //     ),
-                    //   ],
-                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DashboardButton(
+                          width: size,
+                          height: size,
+                          text: l10n.stats,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => StatsPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        DashboardButton(
+                          width: size,
+                          height: size,
+                          text: l10n.randomGame,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
                     SizedBox(height: 30),
                   ],
                 );

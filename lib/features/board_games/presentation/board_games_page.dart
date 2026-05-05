@@ -6,6 +6,7 @@ import 'package:board_game_app/features/board_games/presentation/board_game_tile
 import 'package:board_game_app/features/navigation_bar/navigation_button.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/navigation_bar/custom_nav_bar.dart';
+import 'package:board_game_app/features/shared/custom_app_bar.dart';
 import 'package:board_game_app/features/shared/extensions.dart';
 import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:board_game_app/features/shared/slidable/pop_action_controller.dart';
@@ -41,30 +42,11 @@ class _BoardGamesPageState extends State<BoardGamesPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(
-              Icons.arrow_back_ios_sharp,
-              color: Color(settings.theme.secondaryColor),
-            ),
-          ),
-          centerTitle: true,
-          title: Text(
-            l10n.boardGames,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 26,
-              color: Color(settings.theme.secondaryColor),
-            ),
-          ),
-          backgroundColor: Color(settings.theme.primaryColor),
-        ),
+        appBar: CustomAppBar(settings: settings, title: l10n.boardGames),
         backgroundColor: Color(settings.theme.backgroundColor),
         body: Stack(
           children: [
             BlocBuilder(
-              // listener: (context, state) {},
               bloc: context.read<BoardGameBloc>(),
               builder: (context, state) {
                 if (state is LoadBoardGames) {

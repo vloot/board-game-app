@@ -16,6 +16,10 @@ import 'package:board_game_app/features/settings/data/repository/app_settings_re
 import 'package:board_game_app/features/settings/domain/repository/app_settings_repository.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
+import 'package:board_game_app/features/stats/data/datasource/stats_datasource.dart';
+import 'package:board_game_app/features/stats/data/stats_repository_impl.dart';
+import 'package:board_game_app/features/stats/domain/stats_repository.dart';
+import 'package:board_game_app/features/stats/presentation/bloc/stats_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 var getIt = GetIt.instance;
@@ -64,6 +68,13 @@ Future<void> setupDI() async {
     () => SessionRepositoryImpl(getIt<SessionDataSource>()),
   );
   getIt.registerFactory(() => SessionsBloc(getIt()));
+
+  // Stats
+  getIt.registerLazySingleton(() => StatsDatasource(db: getIt<Database>()));
+  getIt.registerLazySingleton<StatsRepository>(
+    () => StatsRepositoryImpl(getIt<StatsDatasource>()),
+  );
+  getIt.registerFactory(() => StatsBloc(getIt<StatsRepository>()));
 
   await getIt.allReady();
 }

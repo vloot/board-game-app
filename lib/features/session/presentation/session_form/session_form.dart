@@ -51,7 +51,6 @@ class _SessionFormState extends State<SessionForm> {
             final cubit = context.read<SessionFormCubit>();
             for (var p in widget.sessionEntity!.players) {
               cubit.addSessionPlayer(p);
-              print(p.score);
             }
           }
           return ModalForm(
@@ -81,7 +80,6 @@ class _SessionFormState extends State<SessionForm> {
                         border: BoxBorder.all(color: Colors.black87),
                         borderRadius: BorderRadius.circular(12),
                       ),
-
                       child: Column(
                         children: [
                           Text(
@@ -159,13 +157,13 @@ class _SessionFormState extends State<SessionForm> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    final bgId = context
-                        .read<DropdownChipCubit<BoardGameEntity>>()
-                        .state
-                        .selected
-                        .first
-                        .id;
+                  final bgCubit = context
+                      .read<DropdownChipCubit<BoardGameEntity>>()
+                      .state;
+                  if (_formKey.currentState!.validate() &&
+                      bgCubit.selected.isNotEmpty) {
+                    // TODO add error handling for when bg is not selected
+                    final bgId = bgCubit.selected.first.id;
                     final players = context
                         .read<SessionFormCubit>()
                         .state

@@ -32,8 +32,8 @@ class DropdownChipContent<T> extends StatelessWidget {
             child: Wrap(
               verticalDirection: VerticalDirection.up,
               alignment: WrapAlignment.start,
-              spacing: 7,
-              runSpacing: 7,
+              spacing: 10,
+              runSpacing: 10,
               children: List.generate(items.length, (index) {
                 final chipData = getChipData(items[index]);
                 final selected = state.selected.contains(items[index]);

@@ -8,6 +8,7 @@ import 'package:board_game_app/features/session/presentation/session_form/sessio
 import 'package:board_game_app/features/session/presentation/session_tile.dart';
 import 'package:board_game_app/features/settings/presentation/app_settings_bloc.dart';
 import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
+import 'package:board_game_app/features/shared/custom_app_bar.dart';
 import 'package:board_game_app/features/shared/extensions.dart';
 import 'package:board_game_app/features/shared/form/form_launcher.dart';
 import 'package:board_game_app/features/shared/slidable/pop_action_controller.dart';
@@ -51,25 +52,7 @@ class _SessionsPageState extends State<SessionsPage> {
         },
         child: Scaffold(
           backgroundColor: Color(settings.theme.backgroundColor),
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: Icon(
-                Icons.arrow_back_ios_sharp,
-                color: Color(settings.theme.secondaryColor),
-              ),
-            ),
-            centerTitle: true,
-            title: Text(
-              l10n.sessions,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 26,
-                color: Color(settings.theme.secondaryColor),
-              ),
-            ),
-            backgroundColor: Color(settings.theme.primaryColor),
-          ),
+          appBar: CustomAppBar(settings: settings, title: l10n.sessions),
           body: Builder(
             builder: (context) {
               return Stack(

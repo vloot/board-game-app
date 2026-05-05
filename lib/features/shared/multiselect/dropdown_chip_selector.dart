@@ -14,6 +14,9 @@ class DropdownChipSelector<T> extends StatelessWidget {
   final bool allowMultiple;
   final DropdownChipCubit<T> cubit;
   final T? defaultValue;
+  final PopupPosition position;
+
+  final double minHeight;
 
   const DropdownChipSelector({
     super.key,
@@ -22,6 +25,8 @@ class DropdownChipSelector<T> extends StatelessWidget {
     required this.getChipData,
     required this.cubit,
     this.allowMultiple = true,
+    this.position = PopupPosition.top,
+    this.minHeight = 62,
     this.defaultValue,
   });
 
@@ -35,7 +40,7 @@ class DropdownChipSelector<T> extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: CustomPopup(
-          position: PopupPosition.top,
+          position: position,
           showArrow: true,
           content: BlocProvider.value(
             value: cubit,
@@ -46,59 +51,72 @@ class DropdownChipSelector<T> extends StatelessWidget {
               cubit: cubit,
             ),
           ),
-          child: Container(
-            constraints: BoxConstraints(minHeight: 62),
-            padding: EdgeInsets.only(top: 14, right: 16, bottom: 14, left: 12),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: BoxBorder.all(color: Colors.black87),
-            ),
-            child: BlocBuilder<DropdownChipCubit<T>, DropdownSelectorState<T>>(
-              builder: (context, state) {
-                final children = <Widget>[];
-                if (state.selected.isEmpty) {
-                  children.add(
-                    Text(
-                      palceholder,
-                      style: TextStyle(color: Colors.black87, fontSize: 16),
-                    ),
-                  );
-                } else {
-                  final lst = state.selected.toList();
-                  children.addAll(
-                    List.generate(
-                      state.selected.length,
-                      (index) => DropdownChip(
-                        chipData: getChipData(lst[index]),
-                        selected: true,
-                        onSelected: (value) {
-                          cubit.toggle(lst[index]);
+          child: Stack(
+            children: [
+              Container(
+                constraints: BoxConstraints(minHeight: minHeight),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: BoxBorder.all(color: Colors.black87),
+                ),
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    top: 14,
+                    right: 12,
+                    bottom: 14,
+                    left: 12,
+                  ),
+                  child:
+                      BlocBuilder<
+                        DropdownChipCubit<T>,
+                        DropdownSelectorState<T>
+                      >(
+                        builder: (context, state) {
+                          final children = <Widget>[];
+                          if (state.selected.isEmpty) {
+                            children.add(
+                              Text(
+                                palceholder,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            );
+                          } else {
+                            final lst = state.selected.toList();
+                            children.addAll(
+                              List.generate(
+                                state.selected.length,
+                                (index) => DropdownChip(
+                                  chipData: getChipData(lst[index]),
+                                  selected: true,
+                                  onSelected: (value) {
+                                    cubit.toggle(lst[index]);
+                                  },
+                                ),
+                              ),
+                            );
+                          }
+                          return Wrap(
+                            alignment: WrapAlignment.start,
+                            runAlignment: WrapAlignment.end,
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: children,
+                          );
                         },
                       ),
-                    ),
-                  );
-                }
-                return Stack(
-                  alignment: AlignmentGeometry.topLeft,
-                  children: [
-                    Wrap(
-                      alignment: WrapAlignment.start,
-                      runAlignment: WrapAlignment.end,
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: children,
-                    ),
-                    Positioned(
-                      top: 10,
-                      bottom: 10,
-                      right: 0,
-                      child: Icon(Icons.arrow_drop_down_sharp),
-                    ),
-                  ],
-                );
-              },
-            ),
+                ),
+              ),
+              Positioned(
+                top: 10,
+                bottom: 10,
+                right: 4,
+                child: Icon(Icons.arrow_drop_down_sharp, color: Colors.black),
+              ),
+            ],
           ),
         ),
       ),
