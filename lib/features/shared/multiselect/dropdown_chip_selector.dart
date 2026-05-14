@@ -12,6 +12,7 @@ class DropdownChipSelector<T> extends StatelessWidget {
   final List<T> items;
   final DropdownChipData<T> Function(T item) getChipData;
   final bool allowMultiple;
+  final int maxSelection;
   final DropdownChipCubit<T> cubit;
   final T? defaultValue;
   final PopupPosition position;
@@ -27,6 +28,7 @@ class DropdownChipSelector<T> extends StatelessWidget {
     this.allowMultiple = true,
     this.position = PopupPosition.top,
     this.minHeight = 62,
+    this.maxSelection = 0,
     this.defaultValue,
   });
 
@@ -49,6 +51,7 @@ class DropdownChipSelector<T> extends StatelessWidget {
               items: items,
               allowMultiple: allowMultiple,
               cubit: cubit,
+              maxSelectionLimit: maxSelection,
             ),
           ),
           child: Stack(
@@ -93,7 +96,9 @@ class DropdownChipSelector<T> extends StatelessWidget {
                                   chipData: getChipData(lst[index]),
                                   selected: true,
                                   onSelected: (value) {
-                                    cubit.toggle(lst[index]);
+                                    // This callback is for chips inside the
+                                    // input field, not inside content
+                                    // FIXME resolve this
                                   },
                                 ),
                               ),

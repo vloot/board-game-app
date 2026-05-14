@@ -9,6 +9,12 @@ class BarLabelsOverlay extends StatelessWidget {
 
   const BarLabelsOverlay(this.items, {super.key});
 
+  static const _textStyle = TextStyle(
+    fontSize: 15,
+    color: Colors.white,
+    fontWeight: FontWeight.w700,
+  );
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -40,12 +46,6 @@ class BarLabelsOverlay extends StatelessWidget {
               final lossHeight = losses * singleBarHeight;
               final winHeight = wins / maxY * height;
 
-              final textStyle = const TextStyle(
-                fontSize: 15,
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              );
-
               return SizedBox(
                 width: 56,
                 child: Stack(
@@ -56,8 +56,8 @@ class BarLabelsOverlay extends StatelessWidget {
                       Positioned(
                         bottom: e.gamesPlayed - e.wins == 1
                             ? lossHeight
-                            : lossHeight / 2,
-                        child: Text('${losses.toInt()} ▼', style: textStyle),
+                            : lossHeight / 1.6,
+                        child: Text('${losses.toInt()} ▼', style: _textStyle),
                       ),
 
                     // Wins (centered in upper segment)
@@ -66,7 +66,7 @@ class BarLabelsOverlay extends StatelessWidget {
                         bottom: lossHeight + (winHeight / 2),
                         child: Text(
                           '${wins.toInt()} ★',
-                          style: textStyle.copyWith(
+                          style: _textStyle.copyWith(
                             color: Color(playerColor).overlayColor,
                           ),
                         ),

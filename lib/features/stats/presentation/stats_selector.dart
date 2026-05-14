@@ -13,6 +13,7 @@ class StatsSelector<T> extends StatelessWidget {
   final List<T> items;
   final DropdownChipData<T> Function(T) getChipData;
   final String title;
+  final int maxSelection;
 
   const StatsSelector({
     super.key,
@@ -22,6 +23,7 @@ class StatsSelector<T> extends StatelessWidget {
     required this.items,
     required this.getChipData,
     required this.title,
+    this.maxSelection = 0,
   });
 
   @override
@@ -30,17 +32,17 @@ class StatsSelector<T> extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         SizedBox(
           width: halfWidth,
           height: height,
           child: DropdownChipSelector<T>(
             palceholder: l10n.players,
-            position: PopupPosition.bottom,
+            position: PopupPosition.top,
             minHeight: height,
             items: items,
-
+            maxSelection: maxSelection,
             getChipData: getChipData,
             cubit: context.read<DropdownChipCubit<T>>(),
           ),

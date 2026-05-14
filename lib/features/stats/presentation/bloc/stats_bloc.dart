@@ -19,10 +19,14 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
     emit(const StatsLoading());
 
     try {
-      final data = await repository.getPlayerWinrates(
+      final data = (await repository.getPlayerWinrates(
         event.filter.boardGameIds,
         event.filter.playerIds,
-      );
+      ));
+
+      if (data.length > 5) {
+        data.removeRange(5, data.length);
+      }
 
       emit(
         PlayerWinratesLoaded(

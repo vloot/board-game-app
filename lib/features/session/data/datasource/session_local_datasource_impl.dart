@@ -93,7 +93,12 @@ class SessionLocalDataSourceImpl implements SessionDataSource {
 
   @override
   Future<List<SessionModel>> getSessions() async {
-    final sessionRows = await db.select(db.gameSessionTable).get();
+    final sessionRows =
+        await (db.select(db.gameSessionTable)..orderBy([
+              (u) =>
+                  OrderingTerm(expression: u.playedAt, mode: OrderingMode.desc),
+            ]))
+            .get();
 
     if (sessionRows.isEmpty) return [];
 

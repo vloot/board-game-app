@@ -15,8 +15,15 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PlayerTotalStats extends StatelessWidget {
+class PlayerTotalStats extends StatefulWidget {
   const PlayerTotalStats({super.key});
+
+  @override
+  PlayerTotalStatsState createState() => PlayerTotalStatsState();
+}
+
+class PlayerTotalStatsState extends State<PlayerTotalStats> {
+  bool filledPlayerFilter = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +31,7 @@ class PlayerTotalStats extends StatelessWidget {
     final statsBloc = context.read<StatsBloc>();
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => DropdownChipCubit<PlayerEntity>()
-            ..setMultiple(
-              context.read<AppDataCubit>().state.activePlayers.toSet(),
-            ),
-        ),
+        BlocProvider(create: (_) => DropdownChipCubit<PlayerEntity>()),
         BlocProvider(
           create: (_) => DropdownChipCubit<BoardGameEntity>()
             ..setMultiple(
@@ -42,36 +44,6 @@ class PlayerTotalStats extends StatelessWidget {
           final halfWidth = constraints.maxWidth / 2.25;
           return Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  StatsSelector<PlayerEntity>(
-                    title: l10n.players,
-                    halfWidth: halfWidth,
-                    l10n: l10n,
-                    height: 187,
-                    items: context.read<AppDataCubit>().state.activePlayers,
-                    getChipData: (item) => DropdownChipData<PlayerEntity>(
-                      label: item.name,
-                      color: Color(item.color),
-                      chipValue: item,
-                    ),
-                  ),
-                  StatsSelector<BoardGameEntity>(
-                    title: l10n.boardGames,
-                    halfWidth: halfWidth,
-                    l10n: l10n,
-                    height: 187,
-                    items: context.read<AppDataCubit>().state.activeGames,
-                    getChipData: (item) => DropdownChipData<BoardGameEntity>(
-                      label: item.name,
-                      color: Color(item.color),
-                      chipValue: item,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
               MultiBlocListener(
                 listeners: [
                   BlocListener<
@@ -115,6 +87,19 @@ class PlayerTotalStats extends StatelessWidget {
                           : state.playerWinrates
                                 .map((e) => e.gamesPlayed)
                                 .reduce((a, b) => a > b ? a : b);
+
+                      final playerCubit = context
+                          .read<DropdownChipCubit<PlayerEntity>>();
+
+                      if (!filledPlayerFilter &&
+                          playerCubit.state.selected.isEmpty) {
+                        filledPlayerFilter = true;
+
+                        playerCubit.setMultiple({
+                          for (final p in state.playerWinrates)
+                            playersData[p.playerId]!,
+                        });
+                      }
 
                       return Container(
                         alignment: Alignment.center,
@@ -219,6 +204,37 @@ class PlayerTotalStats extends StatelessWidget {
                   },
                 ),
               ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  StatsSelector<PlayerEntity>(
+                    title: l10n.players,
+                    halfWidth: halfWidth,
+                    l10n: l10n,
+                    height: 187,
+                    maxSelection: 5,
+                    items: context.read<AppDataCubit>().state.activePlayers,
+                    getChipData: (item) => DropdownChipData<PlayerEntity>(
+                      label: item.name,
+                      color: Color(item.color),
+                      chipValue: item,
+                    ),
+                  ),
+                  StatsSelector<BoardGameEntity>(
+                    title: l10n.boardGames,
+                    halfWidth: halfWidth,
+                    l10n: l10n,
+                    height: 187,
+                    items: context.read<AppDataCubit>().state.activeGames,
+                    getChipData: (item) => DropdownChipData<BoardGameEntity>(
+                      label: item.name,
+                      color: Color(item.color),
+                      chipValue: item,
+                    ),
+                  ),
+                ],
+              ),
             ],
           );
         },
@@ -252,14 +268,16 @@ class PlayerTotalStats extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
               rodStackItems: [
                 BarChartRodStackItem(0, losses, _lossColor(baseColor)),
-                BarChartRodStackItem(
-                  losses - 0.06,
-                  losses + 0.06,
-                  Colors.blueGrey.withAlpha(42),
-                ),
+                if (wins != 0 && losses != 0)
+                  BarChartRodStackItem(
+                    losses - 0.06,
+                    losses + 0.06,
+                    Colors.white.withAlpha(128),
+                  ),
                 BarChartRodStackItem(
                   losses,
                   losses + wins,
+                  gradient: buildPlayerGradient(player.color),
                   _winColor(baseColor),
                 ),
               ],
@@ -294,18 +312,12 @@ class PlayerTotalStats extends StatelessWidget {
         .withLightness((hsl.lightness + 0.28).clamp(0.0, 1.0))
         .toColor();
 
-    // final mid = hsl
-    //     .withSaturation((hsl.saturation + 0.15).clamp(0.0, 1.0))
-    //     .toColor();
-
-    final dark = hsl
-        .withLightness((hsl.lightness - 0.12).clamp(0.0, 1.0))
-        .toColor();
+    final dark = _lossColor(base);
 
     return LinearGradient(
-      begin: Alignment.bottomLeft,
-      end: Alignment.topRight,
-      colors: [light, base, dark],
+      begin: Alignment.bottomCenter,
+      end: Alignment.topCenter,
+      colors: [dark, base, light],
     );
   }
 }

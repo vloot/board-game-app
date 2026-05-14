@@ -9,6 +9,7 @@ class DropdownChipContent<T> extends StatelessWidget {
   final List<T> items;
   final DropdownChipData<T> Function(T item) getChipData;
   final bool allowMultiple;
+  final int maxSelectionLimit;
   final DropdownChipCubit<T> cubit;
 
   const DropdownChipContent({
@@ -17,6 +18,7 @@ class DropdownChipContent<T> extends StatelessWidget {
     required this.getChipData,
     required this.allowMultiple,
     required this.cubit,
+    this.maxSelectionLimit = 0,
   });
 
   @override
@@ -24,6 +26,34 @@ class DropdownChipContent<T> extends StatelessWidget {
     return BlocBuilder<DropdownChipCubit<T>, DropdownSelectorState<T>>(
       bloc: cubit,
       builder: (context, state) {
+        final List<Widget> children = List.generate(items.length, (index) {
+          final chipData = getChipData(items[index]);
+          final selected = state.selected.contains(items[index]);
+          return DropdownChip(
+            chipData: chipData,
+            selected: selected,
+            onSelected: (value) {
+              if (allowMultiple) {
+                bool doToggle = false;
+
+                if (maxSelectionLimit <= 0) {
+                  // no limit
+                  doToggle = true;
+                } else if (cubit.state.selected.length < maxSelectionLimit ||
+                    !value) {
+                  doToggle = true;
+                }
+
+                if (doToggle) {
+                  cubit.toggle(chipData.chipValue);
+                }
+              } else {
+                cubit.setMultiple({chipData.chipValue});
+              }
+            },
+          );
+        });
+
         return Padding(
           padding: const EdgeInsets.all(10.0),
           child: FractionallySizedBox(
@@ -34,21 +64,15 @@ class DropdownChipContent<T> extends StatelessWidget {
               alignment: WrapAlignment.start,
               spacing: 10,
               runSpacing: 10,
-              children: List.generate(items.length, (index) {
-                final chipData = getChipData(items[index]);
-                final selected = state.selected.contains(items[index]);
-                return DropdownChip(
-                  chipData: chipData,
-                  selected: selected,
-                  onSelected: (value) {
-                    if (allowMultiple) {
-                      cubit.toggle(chipData.chipValue);
-                    } else {
-                      cubit.setMultiple({chipData.chipValue});
-                    }
-                  },
-                );
-              }),
+              children: [
+                ...children,
+                Center(
+                  child: Text(
+                    'Maximum of $maxSelectionLimit items allowed',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ],
             ),
           ),
         );
