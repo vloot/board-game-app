@@ -4,6 +4,7 @@ import 'package:board_game_app/features/shared/app_data/app_data_cubit.dart';
 import 'package:board_game_app/features/shared/multiselect/cubit/dropdown_selector_cubit.dart';
 import 'package:board_game_app/features/shared/multiselect/cubit/dropdown_selector_state.dart';
 import 'package:board_game_app/features/shared/multiselect/dropdown_chip_data.dart';
+import 'package:board_game_app/features/stats/data/player_winrate_filter.dart';
 import 'package:board_game_app/features/stats/domain/player_winrate.dart';
 import 'package:board_game_app/features/stats/presentation/bloc/stats_bloc.dart';
 import 'package:board_game_app/features/stats/presentation/bloc/stats_event.dart';
@@ -28,7 +29,25 @@ class PlayerTotalStatsState extends State<PlayerTotalStats> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final statsBloc = context.read<StatsBloc>();
+    final statsBloc = context.read<StatsBloc>()
+      ..add(
+        LoadPlayerWinrates(
+          filter: PlayerWinrateFilter(
+            playerIds: context
+                .read<AppDataCubit>()
+                .state
+                .activePlayers
+                .map((e) => e.id)
+                .toList(),
+            boardGameIds: context
+                .read<AppDataCubit>()
+                .state
+                .activeGames
+                .map((e) => e.id)
+                .toList(),
+          ),
+        ),
+      );
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => DropdownChipCubit<PlayerEntity>()),

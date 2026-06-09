@@ -76,12 +76,11 @@ class SessionFormPlayerTile extends StatelessWidget {
                 PlaceIcon(
                   isWinner: sessionPlayer.isWinner,
                   onPressed: () {
-                    sessionPlayer.isWinner ^= true;
                     context
                         .read<SessionFormCubit>()
                         .updateSessinPlayerWinStatus(
                           sessionPlayer.playerId,
-                          sessionPlayer.isWinner,
+                          sessionPlayer.isWinner ^ true,
                         );
                   },
                 ),

@@ -66,12 +66,13 @@ class DropdownChipContent<T> extends StatelessWidget {
               runSpacing: 10,
               children: [
                 ...children,
-                Center(
-                  child: Text(
-                    'Maximum of $maxSelectionLimit items allowed',
-                    style: Theme.of(context).textTheme.bodySmall,
+                if (maxSelectionLimit != 0)
+                  Center(
+                    child: Text(
+                      'Maximum of $maxSelectionLimit items allowed',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ),
-                ),
               ],
             ),
           ),

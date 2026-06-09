@@ -20,7 +20,7 @@ class SessionsBloc extends Bloc<SessionsEvent, SessionsState> {
     on<CreateSession>((event, emit) async {
       emit(SessionFormSubmitted());
       try {
-        sessionRepository.createSession(
+        await sessionRepository.createSession(
           boardGameId: event.boardGameId,
           playedAt: event.playedAt,
           players: event.players,

@@ -32,8 +32,23 @@ class SessionForm extends StatefulWidget {
 
 class _SessionFormState extends State<SessionForm> {
   final _formKey = GlobalKey<FormState>();
+  late final DropdownChipCubit<BoardGameEntity> cubit;
+  late final SessionFormCubit sessionFormCubit;
   bool enableScoring = true;
   DateTime sessionDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = DropdownChipCubit<BoardGameEntity>();
+    sessionFormCubit = SessionFormCubit();
+    if (widget.sessionEntity != null) {
+      sessionDate = widget.sessionEntity!.playedAt;
+      for (var p in widget.sessionEntity!.players) {
+        sessionFormCubit.addSessionPlayer(p);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +56,11 @@ class _SessionFormState extends State<SessionForm> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => SessionFormCubit()),
-        BlocProvider(create: (_) => DropdownChipCubit<BoardGameEntity>()),
+        BlocProvider(create: (_) => sessionFormCubit),
+        BlocProvider(create: (_) => cubit),
       ],
       child: Builder(
         builder: (context) {
-          if (widget.sessionEntity != null) {
-            sessionDate = widget.sessionEntity!.playedAt;
-            final cubit = context.read<SessionFormCubit>();
-            for (var p in widget.sessionEntity!.players) {
-              cubit.addSessionPlayer(p);
-            }
-          }
           return ModalForm(
             _formKey,
             formName: l10n.newSession,

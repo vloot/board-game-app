@@ -100,4 +100,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsAppVersion => 'App version';
+
+  @override
+  String get allTime => 'All time';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get noPlaysInRange => 'No plays in this time range';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get winrates => 'Winrates';
+
+  @override
+  String get gamesPlayed => 'Games played';
+
+  @override
+  String get wins => 'Wins';
+
+  @override
+  String get selectPlayer => 'Select a player';
+
+  @override
+  String get unknown => 'Unknown';
 }

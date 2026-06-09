@@ -46,12 +46,19 @@ class _BoardGamesPageState extends State<BoardGamesPage> {
         backgroundColor: Color(settings.theme.backgroundColor),
         body: Stack(
           children: [
-            BlocBuilder(
+            BlocConsumer<BoardGameBloc, BoardGameState>(
               bloc: context.read<BoardGameBloc>(),
+              listener: (context, state) {
+                if (state is BoardGameAddedState ||
+                    state is BoardGameEditedState) {
+                  context.read<BoardGameBloc>().add(LoadBoardGames());
+                  Navigator.pop(context);
+                } else if (state is BoardGameDeletedState) {
+                  context.read<BoardGameBloc>().add(LoadBoardGames());
+                }
+              },
               builder: (context, state) {
-                if (state is LoadBoardGames) {
-                  // return Text('Loading');
-                } else if (state is BoardGameLoadAllState) {
+                if (state is BoardGameLoadAllState) {
                   return SlidableAutoCloseBehavior(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8),
@@ -67,14 +74,8 @@ class _BoardGamesPageState extends State<BoardGamesPage> {
                       ),
                     ),
                   );
-                } else if (state is BoardGameAddedState ||
-                    state is BoardGameEditedState) {
-                  context.read<BoardGameBloc>().add(LoadBoardGames());
-                  Navigator.pop(context);
-                } else if (state is BoardGameDeletedState) {
-                  context.read<BoardGameBloc>().add(LoadBoardGames());
                 }
-                return SizedBox(height: 10, child: Text(l10n.error));
+                return const SizedBox.shrink();
               },
             ),
             CustomNavBar(

@@ -280,6 +280,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App version'**
   String get settingsAppVersion;
+
+  /// No description provided for @allTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get allTime;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @noPlaysInRange.
+  ///
+  /// In en, this message translates to:
+  /// **'No plays in this time range'**
+  String get noPlaysInRange;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @winrates.
+  ///
+  /// In en, this message translates to:
+  /// **'Winrates'**
+  String get winrates;
+
+  /// No description provided for @gamesPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Games played'**
+  String get gamesPlayed;
+
+  /// No description provided for @wins.
+  ///
+  /// In en, this message translates to:
+  /// **'Wins'**
+  String get wins;
+
+  /// No description provided for @selectPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a player'**
+  String get selectPlayer;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

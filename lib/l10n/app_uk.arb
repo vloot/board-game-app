@@ -30,5 +30,14 @@
   "settingsLang": "Мова",
   "settingsSourceCode": "Код додатку",
   "settingsOpenRepo": "Репозиторій",
-  "settingsAppVersion": "Версія"
+  "settingsAppVersion": "Версія",
+  "allTime": "Весь час",
+  "done": "Готово",
+  "noPlaysInRange": "Немає партій у цьому діапазоні",
+  "total": "Загальна",
+  "winrates": "Відсоток перемог",
+  "gamesPlayed": "Зіграно ігор",
+  "wins": "Перемоги",
+  "selectPlayer": "Оберіть гравця",
+  "unknown": "Невідомо"
 }

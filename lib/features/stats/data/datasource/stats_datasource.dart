@@ -1,4 +1,6 @@
 import 'package:board_game_app/core/infrastructure/database.dart';
+import 'package:board_game_app/features/stats/domain/board_game_stat.dart';
+import 'package:board_game_app/features/stats/domain/player_personal_stats.dart';
 import 'package:board_game_app/features/stats/domain/player_winrate.dart';
 import 'package:drift/drift.dart';
 
@@ -81,5 +83,109 @@ class StatsDatasource {
     });
 
     return res.toList();
+  }
+
+  Future<PlayerPersonalStats> getPlayerPersonalStats(int playerId) async {
+    final playerVar = [Variable<int>(playerId)];
+
+    final aggregateRows = await db
+        .customSelect(
+          '''
+            SELECT
+              COUNT(*) AS gamesPlayed,
+              SUM(CASE WHEN sp.is_winner = 1 THEN 1 ELSE 0 END) AS wins
+            FROM session_player_table sp
+            WHERE sp.player_id = ?
+          ''',
+          variables: playerVar,
+          readsFrom: {db.sessionPlayerTable},
+        )
+        .get();
+
+    final aggregateRow = aggregateRows.first;
+    final gamesPlayed = aggregateRow.read<int>('gamesPlayed');
+    final wins = aggregateRow.read<int>('wins');
+
+    final gameRows = await db
+        .customSelect(
+          '''
+            SELECT
+              s.board_game_id AS boardGameId,
+              COUNT(*) AS timesPlayed
+            FROM session_player_table sp
+            INNER JOIN game_session_table s
+              ON s.id = sp.session_id
+            WHERE sp.player_id = ?
+            GROUP BY s.board_game_id
+            ORDER BY timesPlayed DESC
+          ''',
+          variables: playerVar,
+          readsFrom: {db.sessionPlayerTable, db.gameSessionTable},
+        )
+        .get();
+
+    final playedGames = gameRows
+        .map(
+          (row) => BoardGameStatEntity(
+            boardGameId: row.read<int>('boardGameId'),
+            timesPlayed: row.read<int>('timesPlayed'),
+          ),
+        )
+        .toList();
+
+    return PlayerPersonalStats(
+      playerId: playerId,
+      gamesPlayed: gamesPlayed,
+      wins: wins,
+      playedGames: playedGames,
+    );
+  }
+
+  Future<List<BoardGameStatEntity>> getBoardGameSessions({
+    DateTime? from,
+    DateTime? to,
+  }) async {
+    final conditions = <String>[];
+    final vars = <Variable>[];
+
+    if (from != null) {
+      conditions.add('s.played_at >= ?');
+      vars.add(Variable<DateTime>(from));
+    }
+
+    if (to != null) {
+      conditions.add('s.played_at <= ?');
+      vars.add(Variable<DateTime>(to));
+    }
+
+    final whereClause =
+        conditions.isEmpty ? '' : 'WHERE ${conditions.join(' AND ')}';
+
+    final rows = await db
+        .customSelect(
+          '''
+            SELECT
+              bg.id AS boardGameId,
+              COUNT(s.id) AS timesPlayed
+            FROM board_game_table bg
+            INNER JOIN game_session_table s
+              ON s.board_game_id = bg.id
+            $whereClause
+            GROUP BY bg.id
+            ORDER BY timesPlayed DESC
+          ''',
+          variables: vars,
+          readsFrom: {db.boardGameTable, db.gameSessionTable},
+        )
+        .get();
+
+    return rows
+        .map(
+          (row) => BoardGameStatEntity(
+            boardGameId: row.read<int>('boardGameId'),
+            timesPlayed: row.read<int>('timesPlayed'),
+          ),
+        )
+        .toList();
   }
 }

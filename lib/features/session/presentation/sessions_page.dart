@@ -57,8 +57,21 @@ class _SessionsPageState extends State<SessionsPage> {
             builder: (context) {
               return Stack(
                 children: [
-                  BlocBuilder<SessionsBloc, SessionsState>(
+                  BlocConsumer<SessionsBloc, SessionsState>(
                     bloc: context.read<SessionsBloc>(),
+                    listener: (context, state) {
+                      switch (state) {
+                        case SessionEdited():
+                        case SessionFormSuccess():
+                        case SessionDeleted():
+                          context.read<SessionsBloc>().add(LoadSessions());
+                          if (state is SessionFormSuccess) {
+                            Navigator.pop(context);
+                          }
+                        default:
+                          break;
+                      }
+                    },
                     builder: (context, state) {
                       switch (state) {
                         case SessionsLoaded():
@@ -70,14 +83,6 @@ class _SessionsPageState extends State<SessionsPage> {
                           return SlidableAutoCloseBehavior(
                             child: ListView(children: children),
                           );
-
-                        case SessionFormSuccess():
-                        case SessionDeleted():
-                          context.read<SessionsBloc>().add(LoadSessions());
-                          if (state is SessionFormSuccess) {
-                            Navigator.pop(context);
-                          }
-                          return const SizedBox.shrink();
 
                         case SessionsError():
                           return Text(state.message);
@@ -139,12 +144,14 @@ class _SessionsPageState extends State<SessionsPage> {
               strokeAlign: 1.5,
               width: 2,
             ),
-            label: Text(
-              style: TextStyle(
-                // color: Colors.black,
-                fontWeight: FontWeight.w600,
+            label: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 100),
+              child: Text(
+                player.isWinner ? '🏆 ${playerEntity.name}' : playerEntity.name,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-              player.isWinner ? '🏆 ${playerEntity.name}' : playerEntity.name,
             ),
             selectedColor: Color(playerEntity.color).withAlpha(55),
             selected: true,

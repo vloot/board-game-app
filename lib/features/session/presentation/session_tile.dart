@@ -72,7 +72,15 @@ class SessionTile extends StatelessWidget {
                   ),
                 ),
               ),
-              Wrap(spacing: 12, runSpacing: 12, children: playerChips),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+                children: [
+                  ...playerChips.take(3),
+                  if (playerChips.length > 3)
+                    Chip(label: Text('+${playerChips.length - 3}')),
+                ],
+              ),
             ],
           ),
         ),

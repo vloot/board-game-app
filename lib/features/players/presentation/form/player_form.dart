@@ -32,12 +32,6 @@ class _PlayerFormState extends State<PlayerForm> {
   Color color = Colors.white;
 
   @override
-  void setState(VoidCallback fn) async {
-    super.setState(fn);
-    context.read<PlayerBloc>().add(GetPlayers());
-  }
-
-  @override
   Widget build(BuildContext context) {
     Color? preloadedColor;
     final l10n = AppLocalizations.of(context)!;

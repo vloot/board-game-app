@@ -100,4 +100,31 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settingsAppVersion => 'Версія';
+
+  @override
+  String get allTime => 'Весь час';
+
+  @override
+  String get done => 'Готово';
+
+  @override
+  String get noPlaysInRange => 'Немає партій у цьому діапазоні';
+
+  @override
+  String get total => 'Загальна';
+
+  @override
+  String get winrates => 'Відсоток перемог';
+
+  @override
+  String get gamesPlayed => 'Зіграно ігор';
+
+  @override
+  String get wins => 'Перемоги';
+
+  @override
+  String get selectPlayer => 'Оберіть гравця';
+
+  @override
+  String get unknown => 'Невідомо';
 }

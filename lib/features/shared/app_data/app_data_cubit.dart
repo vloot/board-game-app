@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:board_game_app/features/board_games/domain/board_game_entity.dart';
 import 'package:board_game_app/features/board_games/domain/board_game_repo.dart';
 import 'package:board_game_app/features/players/domain/player_entity.dart';
@@ -54,14 +56,19 @@ class AppDataCubit extends Cubit<AppDataState> {
   final PlayerRepository playerRepo;
   final BoardGameRepo gameRepo;
 
-  AppDataCubit(this.playerRepo, this.gameRepo) : super(const AppDataState()) {
-    playerRepo.repositoryEvents.subscribe(((_) {
-      load(force: true);
-    }));
+  late final StreamSubscription _playerSub;
+  late final StreamSubscription _gameSub;
 
-    gameRepo.repositoryEvents.subscribe(((_) {
-      load(force: true);
-    }));
+  AppDataCubit(this.playerRepo, this.gameRepo) : super(const AppDataState()) {
+    _playerSub = playerRepo.repositoryEvents.subscribe((_) => load(force: true));
+    _gameSub = gameRepo.repositoryEvents.subscribe((_) => load(force: true));
+  }
+
+  @override
+  Future<void> close() {
+    _playerSub.cancel();
+    _gameSub.cancel();
+    return super.close();
   }
 
   Future<void> load({bool force = false}) async {

@@ -160,7 +160,7 @@ class SessionLocalDataSourceImpl implements SessionDataSource {
 
     final res = await query.getSingle();
     return SessionModel(
-      boardGameId: res.id,
+      boardGameId: res.boardGameId,
       playedAt: res.playedAt,
       players: playerRows
           .map(

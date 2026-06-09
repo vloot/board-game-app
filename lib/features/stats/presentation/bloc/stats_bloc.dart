@@ -10,6 +10,8 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
   StatsBloc(this.repository) : super(const StatsInitial()) {
     on<LoadPlayerWinrates>(_onLoadPlayerWinrates);
     on<UpdatePlayerWinrateFilter>(_onUpdatePlayerWinrateFilter);
+    on<LoadBoardGameStats>(_onLoadBoardGameStats);
+    on<LoadPlayerPersonalStats>(_onLoadPlayerPersonalStats);
   }
 
   Future<void> _onLoadPlayerWinrates(
@@ -37,6 +39,37 @@ class StatsBloc extends Bloc<StatsEvent, StatsState> {
           playerWinrates: data,
         ),
       );
+    } catch (e) {
+      emit(StatsError(e.toString()));
+    }
+  }
+
+  Future<void> _onLoadBoardGameStats(
+    LoadBoardGameStats event,
+    Emitter<StatsState> emit,
+  ) async {
+    emit(const StatsLoading());
+
+    try {
+      final data = await repository.getBoardGameSessions(
+        from: event.range?.start,
+        to: event.range?.end,
+      );
+      emit(BoardGameStatsLoaded(boardGameStats: data, range: event.range));
+    } catch (e) {
+      emit(StatsError(e.toString()));
+    }
+  }
+
+  Future<void> _onLoadPlayerPersonalStats(
+    LoadPlayerPersonalStats event,
+    Emitter<StatsState> emit,
+  ) async {
+    emit(const StatsLoading());
+
+    try {
+      final stats = await repository.getPlayerPersonalStats(event.playerId);
+      emit(PlayerPersonalStatsLoaded(stats: stats));
     } catch (e) {
       emit(StatsError(e.toString()));
     }
